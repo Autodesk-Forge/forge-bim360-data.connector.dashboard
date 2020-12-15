@@ -1,0 +1,34 @@
+{
+  "name": "bim360-data-connector-dashboard-sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "start.js",
+  "scripts": {
+    "start": "NODE_ENV=production node start.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {
+    "cookie-parser": "^1.4.4",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "forge-apis": "^0.4.5",
+    "fs": "0.0.1-security",
+    "mkdirp": "^0.5.1",
+    "node-fetch": "^2.6.0",
+    "pako": "^1.0.10",
+    "powerbi-client": "^2.8.0",
+    "rimraf": "^3.0.0",
+    "route-async": "^1.0.5",
+    "superagent": "^5.1.0"
+  }
+}

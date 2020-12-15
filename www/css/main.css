@@ -1,0 +1,171 @@
+html, body{
+  margin:0px;
+  padding:0px;
+}
+
+#dashboard {  
+  overflow: auto;
+  height: 60vh;
+
+} 
+
+.dropdown-menu{
+  overflow: auto; 
+}
+
+.dropdown-height {
+  height:400px;
+}
+#breakdownTree {  
+  overflow: auto;  
+} 
+.jsicon{
+  background-color:white;
+  color:white;
+}
+.input-group-append {
+   background-color: white !important;
+   color: white;;
+ }
+
+ .grid-container {
+   grid-column-gap: 10px;
+  grid-row-gap: 50px; 
+}
+
+.btn{
+  overflow: auto;  
+
+}
+
+ .bouton-image:before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 5px;
+  vertical-align: text-top;
+  background-color: transparent;
+  background-position : center center;
+  background-repeat:no-repeat;
+}
+
+.monBouton:before{
+   background-image : url(/img/pdf-icon.png);
+}
+ .buttonload {
+  background-color: #4CAF50; /* Green background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 12px 24px; /* Some padding */
+  font-size: 16px; /* Set a font-size */
+}
+
+/* Add a right margin to each icon */
+.fa {
+  margin-left: -12px;
+  margin-right: 8px;
+}
+
+
+
+.tooltip-inner {
+  background-color: #a7cc00 !important;
+}
+
+.popover{
+  background-color: #a7cc00 !important;
+}
+.tooltip.bs-tooltip-right .arrow:before {
+  border-right-color: #a7cc00 !important;
+}
+.tooltip.bs-tooltip-left .arrow:before {
+  border-right-color: #a7cc00 !important;
+}
+.tooltip.bs-tooltip-bottom .arrow:before {
+  border-right-color: #a7cc00 !important;
+}
+.tooltip.bs-tooltip-top .arrow:before {
+  border-right-color: #2500cc !important;
+}
+
+
+.my-custom-scrollbar {
+  position: relative;
+  height: 200px;
+  overflow: auto;
+  }
+  
+.table-wrapper-scroll-y {
+display: block;
+}
+.table-hover {
+  background: #0b1927;
+ } 
+ html, body{
+  min-height: 100%;
+  height: 100%;
+}
+
+.fill{
+  height: calc(100vh - 100px);
+}
+
+body {
+  padding-top: 30px; /* space for the top nav bar */
+  margin-right: 20px;
+}
+
+#userHubs {
+  overflow: auto;
+  width: 100%;
+  height: calc(100vh - 150px);
+}
+
+#forgeViewer {
+  width: 95%;
+  height: 90% !important;
+  display:block;
+  position: absolute; 
+
+}
+ 
+#myTabContent{
+  display:block;
+  height: 500px;
+}
+#modelsetList {
+  height: 200px;
+  border:block; 
+}
+ 
+.jstree-default a.jstree-search { color:yellow ; }
+
+.adsk-viewing-viewer.dark-theme .adsk-button.active {
+  color: #EBB30B;
+}
+.adsk-viewing-viewer.dark-theme .adsk-button:hover {
+  border: 1px solid #EBB30B;
+}
+
+
+.list-group{
+  max-height: 200px;
+  margin-bottom: 10px;
+  overflow:scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table  {
+  display:block;
+  height: 500px;
+  overflow-y: auto;
+  text-align: center;
+ }
+
+ #breakdownTable{
+  height: 500px;
+  overflow-y: auto;
+ }
+
+ 

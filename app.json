@@ -1,0 +1,29 @@
+{
+  "name": "BIM 360 Model Coordination API Sample - PDF Exporter of Clash",
+  "description": "This repository demonstrates advanced viewing of clash raw data by Model Coordination API and demos exporting a PDF report on the clashes the user is interested in.",
+  "repository": "https://github.com/autodesk-forge/forge-bim360-clashpdfexport",
+  "logo": "https://avatars0.githubusercontent.com/u/8017462?v=3&s=200",
+  "keywords": [
+    "express",
+    "framework",
+    "autodesk",
+    "forge",
+    "template",
+    "bim360appstore",
+    "modelcoordination"
+  ],
+  "env": {
+    "FORGE_CLIENT_ID": {
+      "description": "Forge Client ID. Ensure this ID also provisions with BIM 360 account"
+    },
+    "FORGE_CLIENT_SECRET": {
+      "description": "Forge Client Secret"
+    },
+    "FORGE_CALLBACK_URL": {
+      "description": "Callback URL of your Forge app, required for 3-legged OAuth",
+      "value": "https://<<YOUR HEROKU APP NAME HERE>>.herokuapp.com/api/forge/callback/oauth"
+    }
+  },
+  "website": "",
+  "success_url": "/"
+}

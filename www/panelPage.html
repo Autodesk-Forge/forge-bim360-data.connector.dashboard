@@ -1,0 +1,70 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+       <div><h4 align="center" >Model Sets &nbsp;&nbsp;
+          <span id="btnRefreshMC" class="fa fa-refresh fa-lg" 
+                style="cursor: pointer;float:center" data-toggle="tooltip" title="Refresh Modelsets">
+          </span></h4>
+      </div>
+    </div> 
+  </div>
+  <div class="row" style="margin-bottom: 20px;">
+    <div class="col">
+       <div id="modelsetList">
+          <div class="list-group"></div>
+          <div align="center"><big>Select one BIM hub and one project</big></div> 
+          <div id="msSpinner" class="spinner-border" style="display:none;margin: auto"></div> 
+      </div> 
+    </div> 
+  </div>
+
+  <div class="row">
+    <div class="col">
+        <div><h4 align="center" >Clash Breakdown View by Element&nbsp;&nbsp;&nbsp;  
+        <span id="btnRefreshClash" class="fa fa-refresh fa-lg" 
+            style="cursor: pointer;float:center" data-toggle="tooltip" title="Refresh Clash">
+            </span>
+        </h4>
+       </div>  
+    </div> 
+  </div>
+
+  <div class="row">
+    <div class="col">
+        <div class="btn-group btn-block" role="group">  
+          <button type="button"  id="models_dropdown_title" class="btn btn-info btn-lg"><i class="fa fa-codepen fa-lg"></i>Select One Model</button>
+          <div class="btn-group" role="group">
+            <button id="btnGroupDrop3" type="button" class="btn btn-info dropdown-toggle btn-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop3" id="models_list">  
+            </div>
+          </div>
+       </div>
+    </div> 
+  </div> 
+
+  <div class="row">
+    <div class="col" id="breakdownTree" style="height:450px;"> 
+        <div id="clashviewSpinner" class="spinner-border" style="display:none;margin: auto"></div>  
+    </div>
+  </div>
+ <div class="row">
+ </div>
+  <div class="row">
+    <div class="col"> 
+        <div class="form-group">
+          <div class="form-group">
+            <div class="input-group mb-3"> 
+              <input type="text" class="form-control form-control-lg" id="search-input" placeholder="Keywords to Search">
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fa fa-search fa-2x"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col">
+          <button type="button"  id="btnExportPDF" class="btn btn-warning btn-lg float-right"><i class="fa fa-file-pdf-o fa-lg"></i>Export PDF</button>
+      </div>  
+  </div>
+
+</div>
