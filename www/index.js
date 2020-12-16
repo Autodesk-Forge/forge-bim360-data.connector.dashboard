@@ -297,12 +297,24 @@ $(window).on('hide.bs.dropdown', function (e) {
 });
 
 function droplistFormatter(value, row, index) {
-  var re = "<div class='btn-group' astyle='position: absolute'><button type='button' class='btn btn-primary btn-xs dropdown-toggle' data-toggle='dropdown'>Options<span class='caret'></span></button><ul class='dropdown-menu text-left' role='menu' style='position:absolute'>";
-  value.forEach(async element => {
-    re += `<li><a><span class='glyphicon glyphicon-edit'></span>&nbsp;&nbsp;${element}</a></li>`;
+  // var re = "<div class='btn-group' astyle='position: absolute'><button type='button' class='btn btn-primary btn-xs dropdown-toggle' data-toggle='dropdown'>Options<span class='caret'></span></button><ul class='dropdown-menu text-left' role='menu' style='position:absolute'>";
+  // value.forEach(async element => {
+  //   re += `<li><a><span class='glyphicon glyphicon-edit'></span>&nbsp;&nbsp;${element}</a></li>`;
+  // });
+  // re += "</ul></div>"; 
+  // return re
+
+  var $select = $(`<select id="schema_${row}_${index}"></select>`, {
   });
-  re += "</ul></div>"; 
-  return re
+  value.forEach(async element => {
+    var $option = $("<option></option>", {
+        "text": element,
+        "value": element
+    }); 
+    $select.append($option);
+  });
+  return $select.prop("outerHTML");
+
 }
 
 function urlFormatter(value, row, index) {
@@ -316,22 +328,28 @@ function urlFormatter(value, row, index) {
 
 $(document).ready(function () {
 
-  const columns  =  [
+   $("input[type='number']").inputSpinner()
+   $("input[type='text']").css('width',50)
+   $("input-group").css('height',30)
+   $("#date1").css('height',30)
+   $("#date2").css('height',30)
+
+   const columns  =  [
     { field: 'description', title: "description", align: 'center' },
-    { field: 'type', title: "type", align: 'center' },
-    { field: 'recur', title: "recur", align: 'center' },
+    { field: 'schedule', title: "schedule", align: 'center' },
+    { field: 'interval', title: "interval", align: 'center' },
 
     { field: 'created_time', title: "created time", align: 'center' }, 
-    { field: 'jobs', title: "jobs", align: 'center',formatter:droplistFormatter },
+    { field: 'jobs', title: "jobs", align: 'left',formatter:droplistFormatter },
     { field: 'status', title: "status", align: 'center',formatter:droplistFormatter },
     { field: 'data', title: "data", align: 'left',formatter:urlFormatter } 
     ]; 
 
     var data = [
-      {description:'extract issues', created_time:'2020-12-03',type:'one time',recur:'n/a',jobs:['2020-12-03'],status:['complete'],data:['issues']},
-      {description:'extract rfis', created_time:'2020-12-04',type:'day',recur:'1',jobs:['2020-12-04','2020-12-05','next-2020-12-06'],status:['complete','complete','queued'],data:['rfis']},
-      {description:'extract admin checklist', created_time:'2020-12-05',type:'week',recur:'2',jobs:['2020-12-04','2020-12-11','next-2020-12-18'],status:['complete','running','queued'],data:['admin','checklists']},
-      {description:'extract all', created_time:'2020-12-10',type:'month',recur:'1',jobs:['2020-12-04','2021-01-04','next-2021-02-04'],status:['complete','complete','running'],data:['admin','checklists','rfis','cost','dailylog','locations','submittals']}
+      {description:'extract issues', created_time:'2020-12-03',schedule:'one time',interval:'n/a',jobs:['2020-12-03'],status:['complete'],data:['issues']},
+      {description:'extract rfis', created_time:'2020-12-04',schedule:'day',interval:'1',jobs:['2020-12-04','2020-12-05','next-2020-12-06'],status:['complete','complete','queued'],data:['rfis']},
+      {description:'extract admin checklist', created_time:'2020-12-05',schedule:'week',interval:'2',jobs:['2020-12-04','2020-12-11','next-2020-12-18'],status:['complete','running','queued'],data:['admin','checklists']},
+      {description:'extract all', created_time:'2020-12-10',schedule:'month',interval:'1',jobs:['2020-12-04','2021-01-04','next-2021-02-04'],status:['complete','complete','running'],data:['admin','checklists','rfis','cost','dailylog','locations','submittals']}
 
     ]
 
@@ -343,17 +361,18 @@ $(document).ready(function () {
       cache: false,
       showToggle: false,
       showPaginationSwitch: false,
-      pagination: true,
+      pagination: false,
       pageList: [5, 10, 25, 50, 100],
       pageSize: 10,
       pageNumber: 1,
       uniqueId: 'id',
       striped: true,
       search: false,
-      showRefresh: true,
+      showRefresh: false,
       minimumCountColumns: 2,
       smartDisplay: true,
-      columns: columns 
+      columns: columns,
+      title:'aaaa'
     });
 
 
