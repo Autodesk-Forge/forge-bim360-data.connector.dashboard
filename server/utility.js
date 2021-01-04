@@ -22,12 +22,19 @@ const fetch = require('node-fetch');
 const rimraf = require('rimraf');
 const readline = require('readline');
 const crypto = require('crypto');
-const pako = require('pako')
+const pako = require('pako') 
 
 
-const statusFolder = './Status/'
+const SocketEnum = {
+    DC_TOPIC: 'dc topic',
+    EXPORT_REQUESTS_DONE:'export requests done',
+    CALLBACK_DONE: 'callback done',
+    DC_ERROR:'dc errors'
+  };  
+    
 
 module.exports = { 
+    SocketEnum,
     clearFolder,
     saveJsonObj,
     downloadResources,

@@ -28,7 +28,7 @@ const projectsServices = require('../services/dm.projects.services');
 const bimDatabase = require('../bim.database')
 
 
-router.get('/dm/getBIMHubs', async (req, res, next) => { 
+router.get('/getBIMHubs', async (req, res, next) => { 
 
   try{
     const userSession = new UserSession(req.session);

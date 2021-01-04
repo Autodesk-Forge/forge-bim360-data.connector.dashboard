@@ -15,8 +15,6 @@
 // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 // UNINTERRUPTED OR ERROR FREE.
 /////////////////////////////////////////////////////////////////////
-
-
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);  
@@ -24,11 +22,10 @@ const server = require('http').Server(app);
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-const oauth = require('./server/endpoints/oauth.endpoints'); 
-const dm = require('./server/endpoints/dm.endpoints.js')
-//const dc = require('./server/endpoints/dc.endpoints'); 
+const oauth = require('./server/endpoints/oauth'); 
+const dm = require('./server/endpoints/data_management')
+const dc = require('./server/endpoints/data_connector'); 
  
-
 app.use(cookieParser());
 app.set('trust proxy', 1) // trust first proxy - HTTPS on Heroku 
 app.use(session({
@@ -43,12 +40,26 @@ app.use(session({
 }));
 
 app.use('/', express.static(__dirname+ '/www') );
-app.use('/', dm)
-app.use('/', oauth);  
-//app.use('/', dc);  
+
+app.use('/oauth', oauth);   
+app.use('/dm', dm)
+app.use('/dc', dc);  
  
 app.set('port', process.env.PORT || 3000);
  
+//setup socket 
+global.MyApp = {
+  SocketIo : require('socket.io')(server)
+};
+global.MyApp.SocketIo.on('connection', function(socket){
+  console.log('user connected to the socket');
+
+  socket.on('disconnect', function(){
+      console.log('user disconnected from the socket');
+    });
+})
+//end setup socket
+
 server.listen(app.get('port'), function() {
     console.log('Server listening on port ' + server.address().port);
 });

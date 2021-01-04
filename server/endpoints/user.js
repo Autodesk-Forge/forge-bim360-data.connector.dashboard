@@ -16,37 +16,21 @@
 // UNINTERRUPTED OR ERROR FREE.
 /////////////////////////////////////////////////////////////////////
 
-'use strict';  
- 
-// forge oAuth package
-var forgeSDK = require('forge-apis'); 
-var config = require('../config');
+const express = require('express');
+const { UserProfileApi } = require('forge-apis');
+const { OAuth } = require('../services/oauth');
 
-function getAdminTwoLeggedToken() {
+let router = express.Router();
 
-  return new Promise(function(resolve,reject) {
+router.get('/user/profile', async (req, res) => {
+    const oauth = new OAuth(req.session);
+    const internalToken = await oauth.getInternalToken();
+    const user = new UserProfileApi();
+    const profile = await user.getUserProfile(oauth.getClient(), internalToken);
+    res.json({
+        name: profile.body.firstName + ' ' + profile.body.lastName,
+        picture: profile.body.profileImages.sizeX40
+    });
+});
 
-    var forgeOAuth = new forgeSDK.AuthClientTwoLegged(
-      config.credentials.client_id,
-      config.credentials.client_secret,
-      config.scopeInternal);
-
-    forgeOAuth.authenticate()
-      .then(function (twoleggedcredentials) {
-
-        console.log('get admin credentials succeeded!');  
- 
-        resolve({oAuth:forgeOAuth,
-                credentials:twoleggedcredentials});
-      })
-      .catch(function (error) {
-        console.log('get admin credentials failed!');  
-        reject({error:error});
-      });
-  });
-}
-
-module.exports = {
-  getAdminTwoLeggedToken:getAdminTwoLeggedToken
-};
- 
+module.exports = router;
