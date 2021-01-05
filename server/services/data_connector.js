@@ -58,14 +58,14 @@ async function getRequests(hubId, allRequests, limit = 10, offset = 0) {
         const response = await get(endpoint, headers);
 
         if (response.results && response.results.length > 0) {
-            console.log(`getting requests of hub succeeded ${hubId}`)
+            console.log(`get one page of requests succeeded: hubId=${hubId}`)
             allRequests = allRequests.concat(response.results);
-            return getRequests(hubId, allRequests, response.results);
+            return getRequests(hubId, allRequests, limit,response.results.length);
         } else {
             return allRequests
         }
     } catch (e) {
-        console.error(`all requests of  ${hubId} failed: ${e}`)
+        console.error(`get one page of requests failed: hibId=${hubId}, ${e}`)
         return []
     }
 }

@@ -16,113 +16,51 @@
 // UNINTERRUPTED OR ERROR FREE.
 /////////////////////////////////////////////////////////////////////
 
-'use strict';  
+const express = require('express');
 
+const config = require('../config');
+const { OAuth } = require('../services/oauth');
 
-// web framework
-var express = require('express');
-var router = express.Router();
-var request = require('request');
+let router = express.Router();
 
-// forge oAuth package
-var forgeSDK = require('forge-apis');
-
-var config = require('../config');
-var UserSession = require('../services/userSession'); 
-
-router.get('/oauth/clientid', function (req, res) {
-  res.json({
-    'ForgeClientId': config.credentials.client_id
-  });
+router.get('/callback', async (req, res, next) => {
+    const { code } = req.query;
+    const oauth = new OAuth(req.session);
+    try {
+        await oauth.setCode(code);
+        res.redirect('/');
+    } catch(err) {
+        next(err);
+    }
 });
 
-// this end point will logoff the user by destroying the session
-// as of now there is no Forge endpoint to invalidate tokens
-router.get('/oauth/logoff', function (req, res) {
-  req.session.destroy();
-  res.end('/');
-}); 
-
-// return the public token of the current user
-// the public token should have a limited scope (read-only)
-router.get('/oauth/publictoken', function (req, res) {
-
-  var userSession = new UserSession(req.session);
-  if (!userSession.isAuthorized()) {
-    console.log('no token for client');
-    res.end("");  
-    return;
-  } 
-  res.end(userSession.getUserClientCredentials().access_token);
+router.get('/url', (req, res) => {
+    const url = `${config.endpoints.authentication.authorize}?response_type=code&client_id=${config.credentials.client_id}&redirect_uri=${config.credentials.callback_url}&scope=${config.credentials.scopes.internal.join(" ")}` 
+    res.end(url);
 });
 
-// return the forge authenticate url
-router.get('/oauth/url', function (req, res) {
-  // redirect the user to this page
-  var url =
-    "https://developer.api.autodesk.com" +
-    '/authentication/v1/authorize?response_type=code' +
-    '&client_id=' + config.credentials.client_id +
-    '&redirect_uri=' + config.callbackURL +
-    '&scope=' + config.scopeInternal.join(" ");
-  res.end(url);
+router.get('/signout', (req, res) => {
+    req.session = null;
+    res.redirect('/');
 });
 
-// wait for Autodesk callback (oAuth callback)
-router.get('/api/forge/callback/oauth', function (req, res) {
-
-  var code = req.query.code;
-  var userSession = new UserSession(req.session);
-
-  // first get a 3-legged token of the user
-  var req = new forgeSDK.AuthClientThreeLegged(
-     config.credentials.client_id,
-     config.credentials.client_secret, 
-     config.callbackURL, config.scopeInternal);
-
-   req.getToken(code)
-    .then(function (userServerCredentials) {
-
-      console.log('get user server token succeeded!');
-      userSession.setUserServerCredentials(userServerCredentials);
-      userSession.setUserServerOAuth(req); 
- 
-      // then refresh and get a token for viewer
-      // that we can send to the client
-      var req2 = new forgeSDK.AuthClientThreeLegged(
-        config.credentials.client_id, 
-        config.credentials.client_secret,
-        config.callbackURL, 
-        config.scopePublic);
-
-      req2.refreshToken(userServerCredentials)
-        .then(function (userClientCredentials) {
-          console.log('get user client token succeeded!'); 
-          userSession.setUserClientCredentials(userClientCredentials);
-          userSession.setUserClientOAuth(req); 
-
-           res.redirect('/');
-        })
-        .catch(function (error) {
-          console.log('get user client token failed!');  
-          respondWithError(res, error)
-        });
-    })
-    .catch(function (error) {
-      console.log('get user server token failed!');   
-      respondWithError(res, error)
-    });
+// Endpoint to return a 2-legged access token
+router.get('/publictoken', async (req, res, next) => {
+    const oauth = new OAuth(req.session);
+    if (!oauth.isAuthorized()) {
+        res.status(401).end();
+        return;
+    } 
+    try {
+        const accessToken = await oauth.getPublicToken();
+        res.json(accessToken);
+    } catch(err) {
+        next(err);
+    }
 });
 
-function respondWithError(res, error) {
-  if (error.statusCode) {
-    res.status(error.statusCode).end(error.statusMessage);
-  } else {
-    res.status(500).end(error.message);
-  }
-} 
-
-
+router.get('/clientid', (req, res) =>{
+    res.status(200).end( JSON.stringify({id : config.credentials.client_id}) );
+});
 
 module.exports = router;
- 

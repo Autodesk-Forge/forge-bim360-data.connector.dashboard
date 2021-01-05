@@ -20,145 +20,78 @@
 
 const express = require('express');
 const router = express.Router(); 
- 
-const UserSession = require('../services/userSession');
-const oAuthServices = require('../services/oauth.services'); 
-const hubsServices = require('../services/dm.hubs.services');
-const projectsServices = require('../services/dm.projects.services');
-const bimDatabase = require('../bim.database')
+const config = require('../config')
 
+const { OAuth } = require('../services/oauth')
+const dmServices = require('../services/data_management');
 
-router.get('/getBIMHubs', async (req, res, next) => { 
-
-  try{
-    const userSession = new UserSession(req.session);
-    if (!userSession.isAuthorized()) {
-      res.status(401).end('Please login first');
-      return;
-    }
-
-    let input = {
-      oAuth:userSession.getUserServerOAuth(),
-      credentials:userSession.getUserServerCredentials()
-    } 
-    const hubs = await hubsServices.getHubs(input) 
-    if(hubs){
-      res.json(hubs)
-      getAllHubsInfo(hubs) 
-    }
-    else
-      res.status(500).end() 
+router.use(async (req, res, next) => {
+  const oauth = new OAuth(req.session);
+  if (!oauth.isAuthorized()) {
+    console.log('no valid authorization!')
+    res.status(401).end('Please login first')
+    return
   }
-  catch(e){
-    console.log('getBIMHubs failed: '+ e.message)
-    res.status(500).end()
-  } 
-})
+  req.oauth_client = oauth.getClient();
+  req.oauth_token = await oauth.getInternalToken();
+  var twoleggedoauth = oauth.get2LeggedClient()
+  var twoleggedres = await twoleggedoauth.authenticate()
+  config.credentials.token_3legged = req.oauth_token.access_token
+  config.credentials.token_2legged = twoleggedres.access_token
 
-router.get('/dm/getBIMProjects/:hubId', async (req, res, next) => {
-  try{
-    const userSession = new UserSession(req.session);
-    if (!userSession.isAuthorized()) {
-      res.status(401).end('Please login first');
-      return;
-    } 
-    const hubId = req.params['hubId']
-    let input = {
-      oAuth:userSession.getUserServerOAuth(),
-      credentials:userSession.getUserServerCredentials(),
-      hubId:hubId
-    } 
-    const projects = await projectsServices.getProjects(input) 
-    if(projects){
-      res.json(projects)
-    }
-    else
-      res.status(500).end() 
-  }
-  catch(e){
-    console.log('getBIMProjects failed: '+ e.message)
-    res.status(500).end()
-  } 
-})
-
-router.get('/dm/user/profile', async (req, res, next) => {
- 
-  try{
-    const userSession = new UserSession(req.session);
-    if (!userSession.isAuthorized()) {
-      res.status(401).end('Please login first');
-      return;
-    } 
-    let input = {
-      oAuth:userSession.getUserServerOAuth(),
-      credentials:userSession.getUserServerCredentials()
-    } 
-    const userprofile = await hubsServices.getUserProfile(input)  
-    if(userprofile)
-      res.json(userprofile)
-    else
-      res.status(500).end() 
-  }
-  catch(e){
-    console.log('get user profile failed: '+ e.message)
-    res.status(500).end()
-  }  
+  next();
 }); 
 
-router.get('/dm/user/getUserName/:hubId/:userId', async (req, res, next) => {
-  
-  try{
-    const userSession = new UserSession(req.session);
-    if (!userSession.isAuthorized()) {
-      res.status(401).end('Please login first');
-      return;
-    } 
-    let input = {
-      oAuth:userSession.getUserServerOAuth(),
-      credentials:userSession.getUserServerCredentials()
-    } 
+router.get('/getHubs', async (req, res, next) => { 
+  try {   
+    var allHubs = []
+    allHubs = await dmServices.getHubs(allHubs)  
 
-    const hubId = req.params['hubId']
-    const userId = req.params['userId'] 
-    const userName = bimDatabase.getUserNamebyID(hubId,userId)
-    res.send(userName)  
-  }
-  catch(e){
-    console.log('getUserName: '+ e.message)
-    res.status(500).end()
-  }  
-});
-
-
-async function getAllHubsInfo(hubs) {
-
-  try{
-    const twoLO = await oAuthServices.getAdminTwoLeggedToken()  
-    for(let index in hubs){ 
-
-        const hubId = hubs[index].id
-        var input={
-          access_token:twoLO.credentials.access_token, 
-          accountId:hubId.substr(2, hubId.length - 1), //remove b. 
-          hubId:hubId
-        }  
-        
-        const allUsers = await hubsServices.getHQUsersList(input)
-        bimDatabase.refreshHQUsersList(hubId,allUsers); 
-        console.log('refreshHQUsersList '+ hubId)  
-
-        const allCompanies = await hubsServices.getHQCompanyList(input)
-        bimDatabase.refreshHQCompaniesList(hubId,allCompanies); 
-        console.log('refreshHQCompaniesList '+ hubId)  
-
-
-        console.log('Get BIM hub all info succeeded! '+ hubId)  
+    var resHubs = [] 
+    allHubs.forEach(async function (hub) {
+      var hubType;
+      switch (hub.attributes.extension.type) {
+        case "hubs:autodesk.core:Hub":
+          hubType = "hubs";
+          break;
+        case "hubs:autodesk.a360:PersonalHub":
+          hubType = "personalHub";
+          break;
+        case "hubs:autodesk.bim360:Account":
+          hubType = "bim360Hubs";
+          break;
       }
+      if (hubType == "bim360Hubs") {
+        resHubs.push({ id: hub.id, name: hub.attributes.name })
+      }
+    })
+
+    //generally, a few hubs only. so wait the extracting completes and
+    //return the hubs list
+    res.json(resHubs)  
+ 
+   } catch(e) {
+      // here goes out error handler
+      console.log('get all hubs failed: '+ e.message)
+      res.status(500).end() 
+   }
+})
+ 
+router.get('/userProfile', async (req, res, next) => {
+
+  try {   
+    const userProfile = await dmServices.getUserProfile()  
+    res.json(userProfile) 
+  }catch(e) {
+    // here goes out error handler
+    console.log(`get userProfile failed: ${e.message}`)
+    res.status(500).end()
   }
-  catch(ex){
-    console.log(ex)
-  } 
-}
+
+}); 
+ 
+
+ 
 
 module.exports =  router 
  

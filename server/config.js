@@ -18,6 +18,8 @@
 
 // Autodesk Forge configuration
 
+const ForgeBaseUrl = 'https://developer.api.autodesk.com'
+
 const credentials = {
   client_id: process.env.FORGE_CLIENT_ID,
   client_secret: process.env.FORGE_CLIENT_SECRET,
@@ -38,8 +40,10 @@ const credentials = {
 }
 
 const endpoints = {
-  ForgeBaseUrl:'https://developer.api.autodesk.com' ,
-  bim360Admin:{ 
+  authentication:{
+    authorize: `${ForgeBaseUrl}/authentication/v1/authorize` 
+  },
+   bim360Admin:{ 
       get_project_companies: `${ForgeBaseUrl}/hq/v1/accounts/{0}/projects/{1}/companies` ,
       get_project_users:  `${ForgeBaseUrl}/bim360/admin/v1/projects/{0}/users`,
       get_project_roles:  `${ForgeBaseUrl}/hq/v2/accounts/{0}/projects/{1}/industry_roles`

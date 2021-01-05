@@ -27,6 +27,7 @@ const pako = require('pako')
 
 const SocketEnum = {
     DC_TOPIC: 'dc topic',
+    EXPORT_HUBS_DONE:'export hubs done',
     EXPORT_REQUESTS_DONE:'export requests done',
     CALLBACK_DONE: 'callback done',
     DC_ERROR:'dc errors'

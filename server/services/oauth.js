@@ -18,7 +18,7 @@
 
 const { AuthClientThreeLegged, AuthClientTwoLegged } = require('forge-apis');
 
-const config = require('../../config');
+const config = require('../config');
 
 class OAuth {
     constructor(session) {

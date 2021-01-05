@@ -23,79 +23,45 @@ const { get } = require('./fetch_common')
 
 module.exports = {
   getHubs,
-  getUserProfile,
-  getAdminUsersList,
-  getAdminCompanyList
+  getUserProfile 
 }
 
-async function getHubs(allHubs) {
+async function getHubs(allHubs,limit = 10, number = 0) {
 
   try {
-    const endpoint = config.endpoints.bim360DM.get_hubs + `?limit=${limit}&offset=${offset}`
+    const endpoint = config.endpoints.bim360DM.get_hubs + `?page[limit]=${limit}&page[number]=${number}`
     const headers = config.endpoints.httpHeaders(config.credentials.token_3legged)
     const response = await get(endpoint, headers);
 
-    if (response.results && response.results.length > 0) {
-      console.log(`get hubs succeeded`)
-      allRequests = allRequests.concat(response.results);
-      return getRequests(hubId, allRequests, response.results);
+    if (response.data && response.data.length > 0) {
+      console.log(`get one page of hubs succeeded`)
+      allHubs = allHubs.concat(response.data);
+      //return getHubs(allHubs, limit,number+1);
+      return allHubs
+
     } else {
-      return allRequests
+      return allHubs
     }
   } catch (e) {
-    console.error(`all requests of  ${hubId} failed: ${e}`)
+    console.error(`get one page of hubs failed: ${e}`)
     return []
   }
-
-
-  var hubsAPI = new forgeSDK.HubsApi();
-  hubsAPI.getHubs({}, input.oAuth, input.credentials)
-    .then((response) => {
-      console.log('get hubs succeeded!');
-      var hubs = [];
-      response.body.data.forEach(function (hub) {
-        var hubType;
-        switch (hub.attributes.extension.type) {
-          case "hubs:autodesk.core:Hub":
-            hubType = "hubs";
-            break;
-          case "hubs:autodesk.a360:PersonalHub":
-            hubType = "personalHub";
-            break;
-          case "hubs:autodesk.bim360:Account":
-            hubType = "bim360Hubs";
-            break;
-        }
-        if (hubType == "bim360Hubs") {
-          hubs.push({ id: hub.id, name: hub.attributes.name })
-        }
-      });
-      resolve(hubs);
-    })
-    .catch(function (error) {
-      console.log('get BIM hubs failed!');
-      reject({ error: error });
-    });
-})
 }
+ 
+async function getUserProfile() {
 
-async function getUserProfile(input) {
-
-  const headers = config.hqv1.httpHeaders(input.credentials.access_token)
-  const endpoint = config.hqv1.getUserProfileAtMe()
-  const options = { method: 'GET', headers: headers || {} };
-  const response = await fetch(endpoint, options);
-  if (response.status == 200) {
-    const json = await response.json();
+  try {
+    const endpoint = config.endpoints.bim360DM.get_profile
+    const headers = config.endpoints.httpHeaders(config.credentials.token_3legged)
+    const response = await get(endpoint, headers); 
     return {
-      name: json.firstName + ' ' + json.lastName,
-      picture: json.profileImages.sizeX20,
-      userId: json.userId
-    }
-  } else {
-    const message = await response.text();
-    console.log('get getUserProfile failed' + message)
-    return null
+      name: response.firstName + ' ' + response.lastName,
+      picture: response.profileImages.sizeX20,
+      userId: response.userId
+    }  
+  } catch (e) {
+    console.log(`get getUserProfile failed:${e.message}`)
+    return []
   }
 }
 

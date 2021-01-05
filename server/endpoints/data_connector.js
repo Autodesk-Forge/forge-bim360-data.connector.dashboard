@@ -21,9 +21,10 @@
 const express = require('express');
 const router = express.Router(); 
 const fs = require("fs"); 
+const config = require('../config')
 
-const { OAuth } = require('../services/oauth.services');
-const dcServices = require('../services/dc.services'); 
+const { OAuth } = require('../services/oauth')
+const dcServices = require('../services/data_connector'); 
 
 router.use(async (req, res, next) => {
   const oauth = new OAuth(req.session);

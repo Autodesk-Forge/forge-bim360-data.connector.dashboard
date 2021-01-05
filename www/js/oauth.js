@@ -38,7 +38,7 @@ class oAuth{
       }) 
   } 
 
-   getForgeToken() {
+  async getForgeToken() {
       var token = '';
       $.ajax({
         url: '/oauth/publictoken',
@@ -53,7 +53,7 @@ class oAuth{
   async getForgeUserProfile() {
     return new Promise((resolve, reject) => {   
          jQuery.ajax({
-          url: '/dm/user/profile',
+          url: '/dm/userProfile',
           success: function (profile) {
             resolve(profile);
           }

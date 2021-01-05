@@ -13,7 +13,9 @@
             ],
             "program": "${workspaceFolder}/start.js",
             "env":{
-                ""
+                "FORGE_CLIENT_ID":"lUNh5GqDoGwLXePNjAQOlvy78IBmylLB",
+                "FORGE_CLIENT_SECRET":"oGlRRQ7eUXdNaRWC",
+                "FORGE_CALLBACK_URL":"http://localhost:3000/oauth/callback"
             }
         }
     ]
