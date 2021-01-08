@@ -1,4 +1,4 @@
-class UserDashboardView {
+class DataConnector {
 
   constructor() {
 

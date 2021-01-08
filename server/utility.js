@@ -158,3 +158,10 @@ function flatDeep(arr, d = 1) {
     return d > 0 ? arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val, d - 1) : val), [])
                  : arr.slice();
 };
+
+String.prototype.format =function () {
+    var args = arguments;
+    return this.replace(/\{(\d+)\}/g, function(m, i){
+        return args[i];
+    });
+};

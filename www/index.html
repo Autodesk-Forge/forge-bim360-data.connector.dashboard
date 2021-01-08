@@ -35,6 +35,7 @@
 
 <script src="./js/oauth.js"></script> 
 <script src="./js/data_management.js"></script>
+<script src="./js/data_connector.js"></script>
 
 
 <script src="./js/dc.dashboard.js"></script>
@@ -133,6 +134,13 @@
     </div>
     <div class="row">
       <div id="requests" class="col-7" style="height: 28vh;border:1px solid silver; border-radius:10px; overflow:auto">
+        
+        <div class="clsInProgress" hidden>
+          <div style="text-align: center;">
+            <img src="./img/Bars-1s-200px.svg" class="InProgressImg_table">
+          </div>
+        </div>
+
         <table class="table table-sm table-striped table-bordered table-hover" id="requestsTable">
         
         </table>

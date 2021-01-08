@@ -97,7 +97,7 @@ async function getJobs(hubId, reqId,allJobs, limit = 10, offset = 0) {
         if (response.results && response.results.length > 0) {
             console.log(`getting jobs of one request succeeded: ${reqId}`)
             allJobs = allJobs.concat(response.results);
-            return getJobs(hubId, reqId,allJobs, response.results);
+            return getJobs(hubId, reqId,allJobs, limit,response.results.length);
         } else {
             return allJobs
         }

@@ -22,6 +22,7 @@ const express = require('express');
 const router = express.Router(); 
 const fs = require("fs"); 
 const config = require('../config')
+const utility = require('../utility')
 
 const { OAuth } = require('../services/oauth')
 const dcServices = require('../services/data_connector'); 
@@ -48,20 +49,64 @@ router.get('/requests/:hubId', async (req, res, next) => {
 
   try {   
     const hubId = req.params['hubId']  
-    res.status(200).end()
+    //res.status(200).end()
 
     var allRequests = []
     allRequests = await dcServices.getRequests(hubId, allRequests)  
-    utility.socketNotify(utility.SocketEnum.DC_TOPIC,
-      utility.SocketEnum.EXPORT_REQUESTS_DONE,
-      allRequests) 
+    //get jobs
+    let promiseArr = allRequests.map(async (r, index) => {
+      const reqId = r.id     
+      console.log(`sorting one request ${reqId}`);
+
+      if(r.description.includes('IQ Data Extraction')){
+        r.description = 'Extraction by UI'
+      }
+      var allJobs =[]
+      allJobs = await dcServices.getJobs(hubId,reqId,allJobs) 
+      r.jobs = allJobs
+
+      //data list of first job
+      if(allJobs.length >0 ){
+        r.data = r.serviceGroups
+      }
+      else{
+        r.data = []
+      }
+      
+      //status of first job
+      if(allJobs.length >0 ){
+        r.status = allJobs[0].status
+      }
+      else{
+        r.status = null
+      } 
+      return r
+    })
+
+    return Promise.all(promiseArr).then((resultsArray) => {
+      console.log(`Promise.all sorting out assets done`); 
+      resultsArray = utility.flatDeep(resultsArray, Infinity)
+      res.json(resultsArray);
+    }).catch(function (err) {
+      console.error(`exception when Promise.all sorting out requests: ${err}`);
+      res.json([]);
+    })
+
+
+    // utility.socketNotify(utility.SocketEnum.DC_TOPIC,
+    //   utility.SocketEnum.EXPORT_REQUESTS_DONE,
+    //   allRequests) 
+
+    res.json(allRequests)
  
    } catch(e) {
       // here goes out error handler
       console.log('get all requests failed: '+ e.message)
-      utility.socketNotify(utility.SocketEnum.DC_TOPIC,
-        utility.SocketEnum.DC_ERROR, {error:e.message})
-      }
+      // utility.socketNotify(utility.SocketEnum.DC_TOPIC,
+      //   utility.SocketEnum.DC_ERROR, {error:e.message})
+      // }
+      res.status(500).end()
+   } 
 });  
 
 router.get('/requests/:hubId/:reqId', async (req, res, next) => {

@@ -1,5 +1,6 @@
 const global_oAuth = new oAuth()
 const global_DataManagement = new DataManagement()
+const global_DataConnector = new DataConnector()
 
 $(document).ready(function () {
 
@@ -17,7 +18,21 @@ $(document).ready(function () {
       $('#signInButton').click(global_oAuth.forgeLogoff);
 
       global_DataManagement.refreshHubs()
+
+       //delegate the event when one hub is selected
+       delegateHubSelection()
+       global_DataConnector.initTable('requestsTable',false)
+
     }
   })()
 });
+
+function delegateHubSelection(){ 
+  $(document).on('click', '#hubs_list a', function(e) {
+    $('#hub_dropdown_title').html($(this).html());
+    const hub_id_without_b = $(this).attr('id')
+    const hub_id_with_b = 'b.' + hub_id_without_b
+    global_DataConnector.refreshRequestsTable(hub_id_without_b,'requestsTable',false)
+  });
+}
 
