@@ -14,18 +14,19 @@ class DataConnector {
       requestsTable: function (isRaw) {
         return [
           { field: 'description', title: "description", align: 'left' },
-          { field: 'isActive', title: "isActive", align: 'center' },
 
           { field: 'scheduleInterval', title: "schedule", align: 'center' },
           { field: 'reoccuringInterval', title: "interval", align: 'center' },
           { field: 'createdAt', title: "created time", align: 'center' },
+          { field: 'effectiveTo', title: "effective to", align: 'center' },
 
-          { field: 'jobs', title: "jobs", align: 'left', formatter: this.parent.droplistFormatter },
-          { field: 'status', title: "status", align: 'center'},
-          { field: 'serviceGroups', title: "service groups", align: 'left', formatter: this.parent.dataFormatter },
+          { field: 'jobs', title: "jobs", align: 'center', formatter: this.parent.droplistFormatter },
+          { field: 'completedAt', title: "job completedAt", align: 'left' },
+          { field: 'status', title: "job status", align: 'center'},
+          { field: 'serviceGroups', title: "service groups", align: 'center', formatter: this.parent.dataFormatter },
           { field: 'createdByEmail', title: "createdByEmail", align: 'center' },
+          { field: 'isActive', title: "isActive", align: 'center' }
 
-          { field: 'effectiveTo', title: "effective to", align: 'center' }
 
         ]
       }
@@ -34,12 +35,12 @@ class DataConnector {
 
 
   droplistFormatter(value, row, index) { 
-    var $select = $(`<select></select>`, {
+    var $select = $(`<select id="${row.id}" data="${index}"></select>`, {
     });
     value.forEach(async element => {
       var $option = $("<option></option>", {
-          "text": `completedAt:${element.completedAt}`,
-          "value": element.id
+          "text": `startedAt:${element.startedAt}`,
+          "value": `${element.id}|${index}`
       }); 
       $select.append($option);
     });
@@ -104,6 +105,9 @@ class DataConnector {
         // }
       });
 
+      //delegate event of switch one job
+      this.delegateJobsEvents() 
+
       $('.clsInProgress').hide(); 
 
     }catch(e){
@@ -154,4 +158,73 @@ class DataConnector {
     })
   }
 
-}
+  async getOneJob(hubId,jobId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `/dc/requests/${hubId}/${jobId}`,
+        type: 'GET',
+        success: function (res) {
+          if (res != null && res != [])
+            resolve(res)
+          else
+            resolve(null)
+        }
+      })
+    })
+  }
+
+  async createRequest(hubId,body) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `/dc/requests/${hubId}`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(body),
+        success: function (res) {
+          if (res != null && res != [])
+            resolve(res)
+          else
+            resolve(null)
+        },
+        error: function (res) { 
+          resolve(null);
+        }
+      })
+    })
+  }
+
+  delegateJobsEvents(){
+    $(document).on('change', 'select',  function(e) {
+       const selectedIndex = $(this)[0].selectedIndex
+       const reqId = $(this)[0].id
+       const value = $(this)[0].options[selectedIndex].value
+       const jobId = value.split('|')[0]
+       const rowIndex = value.split('|')[1]
+
+       //job complete at
+       //this._data['requestsTable'] stores the data already
+       const request = global_DataConnector._data['requestsTable'].find(
+         d=>d.id == reqId
+       )
+       const job = request.jobs.find(
+        d=>d.id == jobId
+       )  
+
+       var $table = $('#requestsTable')
+       $table.bootstrapTable('updateCell', {
+        index: rowIndex,
+        field: 'completedAt',
+        value: job.completedAt
+      })
+       //job status
+       var $table = $('#requestsTable')
+       $table.bootstrapTable('updateCell', {
+        index: rowIndex,
+        field: 'status',
+        value: job.status
+      })
+    })
+ 
+  }
+
+} 

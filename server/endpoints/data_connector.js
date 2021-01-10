@@ -21,6 +21,9 @@
 const express = require('express');
 const router = express.Router(); 
 const fs = require("fs"); 
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
+
 const config = require('../config')
 const utility = require('../utility')
 
@@ -72,6 +75,14 @@ router.get('/requests/:hubId', async (req, res, next) => {
       else{
         r.data = []
       }
+
+      //complete date of first job
+      if(allJobs.length >0 ){
+        r.completedAt = allJobs[0].completedAt
+      }
+      else{
+        r.completedAt = null
+      } 
       
       //status of first job
       if(allJobs.length >0 ){
@@ -79,7 +90,7 @@ router.get('/requests/:hubId', async (req, res, next) => {
       }
       else{
         r.status = null
-      } 
+      }  
       return r
     })
 
@@ -109,13 +120,40 @@ router.get('/requests/:hubId', async (req, res, next) => {
    } 
 });  
 
+//create new request
+router.post('/requests/:hubId', jsonParser,async (req, res, next) => {
+
+  try {   
+    const hubId = req.params['hubId']  
+    let body = req.body 
+    const createRes = await dcServices.postRequest(hubId,body) 
+    if(createRes){
+      res.end()
+    }else{
+      res.status(500).end()
+    } 
+ 
+   } catch(e) {
+      // here goes out error handler
+      console.log('create request failed: '+ e.message)
+      res.status(500).end() 
+    }
+}); 
+
+router.post('/requests/callback', async (req, res, next) => {
+  //one job is done....
+  res.end() //notify Forge this callback is triggered
+
+  console.log('request callback is triggered!')
+  
+
+})
+
 router.get('/requests/:hubId/:reqId', async (req, res, next) => {
 
   try {   
     const hubId = req.params['hubId']  
-    const reqId = req.params['reqId']  
-
-    
+    const reqId = req.params['reqId']   
 
     res.status(200).end()
 
@@ -131,7 +169,23 @@ router.get('/requests/:hubId/:reqId', async (req, res, next) => {
       utility.socketNotify(utility.SocketEnum.DC_TOPIC,
         utility.SocketEnum.DC_ERROR, {error:e.message})
       }
+}); 
+
+router.get('/requests/:hubId/:jobId', async (req, res, next) => {
+
+  try {   
+    const hubId = req.params['hubId']  
+    const jobId = req.params['jobId']  
+     const job = await dcServices.getOneJob(hubId, jobId)   
+     res.json(job);
+
+   } catch(e) {
+      // here goes out error handler
+      console.log('get one job failed: '+ e.message)
+      res.status(500).end() 
+    }
 });  
+ 
  
 module.exports =  router 
  

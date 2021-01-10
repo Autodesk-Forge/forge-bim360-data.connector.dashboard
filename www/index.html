@@ -11,9 +11,11 @@
   <meta charset="utf-8">
 </head>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="libs/jquery-3.3.1.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css">
@@ -149,62 +151,74 @@
         <div class="row">
         </br> 
         </div>
-
         <div class="row">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-            <label>Services</label>
+              <span class="input-group-text" id="inputGroup-sizing-default">Description</span>
+            </div>
+            <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" id="description">
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            <label><bold>Services</bold></label>
             &nbsp
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-              <label class="form-check-label" for="exampleRadios2">
+              <input class="form-check-input" type="checkbox" id="srvAdmin" checked>
+              <label class="form-check-label">
                 Admin
               </label>
             </div>
           </div>
           &nbsp
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-              <label class="form-check-label" for="exampleRadios2">
+              <input class="form-check-input" type="checkbox" id="srvIssue" checked>
+              <label class="form-check-label" >
                 Issue
               </label>
             </div>
             &nbsp
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-              <label class="form-check-label" for="exampleRadios2">
+              <input class="form-check-input" type="checkbox" id="srvRfi" checked>
+              <label class="form-check-label" >
                 Rfi
               </label>
             </div> 
             &nbsp
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-              <label class="form-check-label" for="exampleRadios2">
+              <input class="form-check-input" type="checkbox" id="srvchecklist" checked>
+              <label class="form-check-label">
                 checklist
               </label>
             </div> 
             &nbsp
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-              <label class="form-check-label" for="exampleRadios2">
+              <input class="form-check-input" type="checkbox" id="srvCost" checked>
+              <label class="form-check-label">
                 Cost
               </label>
             </div>  
 
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-              <label class="form-check-label" for="exampleRadios2">
+              <input class="form-check-input" type="checkbox" id="srvDailylog" checked>
+              <label class="form-check-label">
                 Dailylog
               </label>
             </div>  
 
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-              <label class="form-check-label" for="exampleRadios2">
+              <input class="form-check-input" type="checkbox" id="srvLocation" checked>
+              <label class="form-check-label">
                 Location
               </label>
             </div>  
-
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="srvSubmittal" checked>
+              <label class="form-check-label">
+                Submittal
+              </label>
+            </div>
 
            </div>
   
@@ -217,43 +231,42 @@
         </div>
         &nbsp  
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-          <label class="form-check-label" for="exampleRadios1">
+          <input class="form-check-input" type="radio" name="schedule" id="one_time" value="option1" checked>
+          <label class="form-check-label">
             One Time
           </label>
         </div>
           &nbsp
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-            <label class="form-check-label" for="exampleRadios1">
+            <input class="form-check-input" type="radio" name="schedule" id="day">
+            <label class="form-check-label">
               Day
             </label>
           </div>
           &nbsp
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-            <label class="form-check-label" for="exampleRadios1">
+            <input class="form-check-input" type="radio" name="schedule" id="week">
+            <label class="form-check-label">
               Week
             </label>
           </div> 
           &nbsp
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-            <label class="form-check-label" for="exampleRadios1">
+            <input class="form-check-input" type="radio" name="schedule" id="month">
+            <label class="form-check-label">
               Month
             </label>
           </div> 
           &nbsp
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-            <label class="form-check-label" for="exampleRadios1">
+            <input class="form-check-input" type="radio" name="schedule" id="year">
+            <label class="form-check-label">
               Year
             </label>
           </div>  
-          &nbsp &nbsp
-          <div>
-            
-            <input type="number" value="1" min="1" max="1000" step="1" style="width:10px;"/> 
+          &nbsp &nbsp Interval &nbsp
+          <div> 
+            <input id="interval" type="number" value="1" min="1" max="1000" step="1" style="width:50px;"/> 
           </div>
          
          </div> 
@@ -261,17 +274,17 @@
 
         <div class="row">  
           <div class="col-6"> 
-          <div class="input-group datetimepicker" id="input-start-date">
+          <div class="input-group datetimepicker" >
             <span class="input-group-addon">Effective From</span>&nbsp
-            <input class="set-due-date form-control" data-provide="datepicker" id="date1" />
+            <input class="set-due-date form-control" data-provide="datepicker"  id="startDate"/>
             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span> 
           </div>  
         </div>
         <div class="col-6"> 
 
-          <div class="input-group datetimepicker" id="input-start-date">
+          <div class="input-group datetimepicker" >
             <span class="input-group-addon">Effective To</span>&nbsp
-            <input class="set-due-date form-control" data-provide="datepicker" id="date2" />
+            <input class="set-due-date form-control" data-provide="datepicker" id="endDate"/>
             <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span> 
           </div> 
         </div> 
@@ -282,7 +295,7 @@
           <div class="col-4" >
           </div>
           <div class="col-4" >
-            <button type="button" class="btn btn-primary">Create Request</button>
+            <button id="createReq" type="button" class="btn btn-lg btn-primary">Create Request</button>
           </div>
           <div class="col-4" >
           </div>
