@@ -98,7 +98,8 @@ class DataConnector {
         showRefresh: true,
         minimumCountColumns: 2,
         smartDisplay: true,
-        columns: fixCols//,
+        columns: fixCols,
+        sortName:'createdAt'
         // onPageChange: async ( number, size)=> {
         //   await this.parent.getAssets(accountId_without_b,projectId_without_b,projectName,size,number*size*2)
   

@@ -31,6 +31,7 @@ const { OAuth } = require('../services/oauth')
 const dcServices = require('../services/data_connector'); 
 
 router.use(async (req, res, next) => {
+  
   const oauth = new OAuth(req.session);
   if (!oauth.isAuthorized()) {
     console.log('no valid authorization!')

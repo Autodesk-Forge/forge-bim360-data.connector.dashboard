@@ -27,7 +27,7 @@ const dm = require('./server/endpoints/data_management')
 const dc = require('./server/endpoints/data_connector'); 
  
 app.use(cookieParser());
-app.set('trust proxy', 1) // trust first proxy - HTTPS on Heroku 
+// app.set('trust proxy', 1) // trust first proxy - HTTPS on Heroku 
 app.use(session({
   secret: 'autodeskforge',
   cookie: {

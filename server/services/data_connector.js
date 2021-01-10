@@ -173,7 +173,7 @@ async function downloadData(input) {
 
 async function postRequest(hubId,body) {
     try {
-        body.callback = config.credentials.dc_callback_url
+        body.callbackUrl = config.credentials.dc_callback_url
         const endpoint = config.endpoints.bim360DC.post_request.format(hubId)
         const headers = config.endpoints.httpHeaders(config.credentials.token_3legged)
         headers['Content-Type'] = 'application/json'
