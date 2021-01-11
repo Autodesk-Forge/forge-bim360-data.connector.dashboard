@@ -22,12 +22,12 @@ $(document).ready(function () {
        //delegate the event when one hub is selected
        delegateHubSelection()
        delegateCreateRequestButton()
-       global_DataConnector.initTable('requestsTable',false)
 
     }
   })()
 
   initDefaultParamsOfCreateReq()
+  global_DataConnector.initTable('requestsTable',false)
 
 });
 

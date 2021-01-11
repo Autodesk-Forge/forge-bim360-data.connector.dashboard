@@ -22,7 +22,7 @@ class DataConnector {
 
           { field: 'jobs', title: "jobs", align: 'center', formatter: this.parent.droplistFormatter },
           { field: 'completedAt', title: "job completedAt", align: 'left' },
-          { field: 'status', title: "job status", align: 'center'},
+          { field: 'status', title: "job status", align: 'center' },
           { field: 'serviceGroups', title: "service groups", align: 'center', formatter: this.parent.dataFormatter },
           { field: 'createdByEmail', title: "createdByEmail", align: 'center' },
           { field: 'isActive', title: "isActive", align: 'center' }
@@ -34,19 +34,19 @@ class DataConnector {
   }
 
 
-  droplistFormatter(value, row, index) { 
+  droplistFormatter(value, row, index) {
     var $select = $(`<select id="${row.id}" data="${index}"></select>`, {
     });
     value.forEach(async element => {
       var $option = $("<option></option>", {
-          "text": `startedAt:${element.startedAt}`,
-          "value": `${element.id}|${index}`
-      }); 
+        "text": `startedAt:${element.startedAt}`,
+        "value": `${element.id}|${index}`
+      });
       $select.append($option);
     });
-    return $select.prop("outerHTML"); 
+    return $select.prop("outerHTML");
   }
-  
+
   dataFormatter(value, row, index) {
 
     //when initialization, set data list to the data of first job
@@ -63,21 +63,21 @@ class DataConnector {
     // });
     // return $select.prop("outerHTML"); 
     var re = ``
-    value.forEach(async element => { 
-        re += `<a href="${element}" data=${element}>${element}</a>&nbsp|&nbsp`;
-      }); 
-  
-    return re
-  } 
+    value.forEach(async element => {
+      re += `<a href="${element}" data=${element}>${element}</a>&nbsp|&nbsp`;
+    });
 
-  async refreshRequestsTable(hubId,domId, isRaw = false){
-    try { 
-      $('.clsInProgress').show(); 
+    return re
+  }
+
+  async refreshRequestsTable(hubId, domId, isRaw = false) {
+    try {
+      $('.clsInProgress').show();
       const requests = await this.getRequests(hubId)
       this._data[domId] = requests
       //refresh table
 
-      $(`#${domId}`).bootstrapTable('destroy'); 
+      $(`#${domId}`).bootstrapTable('destroy');
 
       const fixCols = this._tableFixComlumns[domId](isRaw)
 
@@ -99,31 +99,31 @@ class DataConnector {
         minimumCountColumns: 2,
         smartDisplay: true,
         columns: fixCols,
-        sortName:'createdAt'
+        sortName: 'createdAt'
         // onPageChange: async ( number, size)=> {
         //   await this.parent.getAssets(accountId_without_b,projectId_without_b,projectName,size,number*size*2)
-  
+
         // }
       });
 
       //delegate event of switch one job
-      this.delegateJobsEvents() 
+      this.delegateJobsEvents()
 
-      $('.clsInProgress').hide(); 
+      $('.clsInProgress').hide();
 
-    }catch(e){
-      $('.clsInProgress').hide(); 
+    } catch (e) {
+      $('.clsInProgress').hide();
 
     }
   }
 
-  initTable(domId,isRaw) {
+  initTable(domId, isRaw) {
     $(`#${domId}`).bootstrapTable('destroy');
-    const columns  = this._tableFixComlumns[domId](isRaw)
+    const columns = this._tableFixComlumns[domId](isRaw)
     $(`#${domId}`).bootstrapTable({
-      parent:this,
+      parent: this,
       data: [],
-      title:domId,
+      title: domId,
       editable: false,
       clickToSelect: true,
       cache: false,
@@ -139,7 +139,7 @@ class DataConnector {
       showRefresh: true,
       minimumCountColumns: 2,
       smartDisplay: true,
-      columns: columns 
+      columns: columns
     });
   }
 
@@ -159,10 +159,10 @@ class DataConnector {
     })
   }
 
-  async getOneJob(hubId,jobId) {
+  async getOneJobDatalist(hubId, jobId) {
     return new Promise((resolve, reject) => {
       $.ajax({
-        url: `/dc/requests/${hubId}/${jobId}`,
+        url: `/dc/requests/${hubId}/${jobId}/dataList`,
         type: 'GET',
         success: function (res) {
           if (res != null && res != [])
@@ -174,7 +174,7 @@ class DataConnector {
     })
   }
 
-  async createRequest(hubId,body) {
+  async createRequest(hubId, body) {
     return new Promise((resolve, reject) => {
       $.ajax({
         url: `/dc/requests/${hubId}`,
@@ -187,45 +187,95 @@ class DataConnector {
           else
             resolve(null)
         },
-        error: function (res) { 
+        error: function (res) {
           resolve(null);
         }
       })
     })
   }
 
-  delegateJobsEvents(){
-    $(document).on('change', 'select',  function(e) {
-       const selectedIndex = $(this)[0].selectedIndex
-       const reqId = $(this)[0].id
-       const value = $(this)[0].options[selectedIndex].value
-       const jobId = value.split('|')[0]
-       const rowIndex = value.split('|')[1]
+  delegateJobsEvents() {
+    $(document).on('change', 'select', function (e) {
+      const selectedIndex = $(this)[0].selectedIndex
+      const reqId = $(this)[0].id
+      const value = $(this)[0].options[selectedIndex].value
+      const jobId = value.split('|')[0]
+      const rowIndex = value.split('|')[1]
 
-       //job complete at
-       //this._data['requestsTable'] stores the data already
-       const request = global_DataConnector._data['requestsTable'].find(
-         d=>d.id == reqId
-       )
-       const job = request.jobs.find(
-        d=>d.id == jobId
-       )  
+      //job complete at
+      //this._data['requestsTable'] stores the data already
+      const request = global_DataConnector._data['requestsTable'].find(
+        d => d.id == reqId
+      )
+      const job = request.jobs.find(
+        d => d.id == jobId
+      )
 
-       var $table = $('#requestsTable')
-       $table.bootstrapTable('updateCell', {
+      var $table = $('#requestsTable')
+      $table.bootstrapTable('updateCell', {
         index: rowIndex,
         field: 'completedAt',
         value: job.completedAt
       })
-       //job status
-       var $table = $('#requestsTable')
-       $table.bootstrapTable('updateCell', {
+      //job status
+      $table.bootstrapTable('updateCell', {
         index: rowIndex,
         field: 'status',
         value: job.status
       })
     })
- 
+
+    var $table = $('#requestsTable')
+    $("#requestsTable").on("click-row.bs.table", (async (row, $sel, field) => {
+
+      const hub_id_without_b = $('#hidden_hub_id').text()
+
+      const reqId = $sel.id
+      const indexId = $(`#${reqId} option:selected`).index()
+      const text = $(`#${reqId} option`)[indexId].text
+      const value = $(`#${reqId} option`)[indexId].value
+      const jobId = value.split('|')[0]
+      const rowIndex = value.split('|')[1]
+
+      const dataList = await this.getOneJobDatalist(hub_id_without_b, jobId)
+
+      //render the data list
+      let dom_dataList = $('#dataList')
+      dom_dataList.empty()
+
+      //add title bar 
+      let oneItem = document.createElement('a')
+      oneItem.classList.add('list-group-item')
+      oneItem.classList.add('active')
+      oneItem.href = "#";
+      oneItem.innerHTML = `Data List - Job ${text}`
+      dom_dataList.append(oneItem);
+
+      dataList.forEach(async d => {
+
+        oneItem = document.createElement('a')
+        oneItem.classList.add('list-group-item')
+        oneItem.href = `/dc/requests/download/${hub_id_without_b}/${jobId}/${d.name}`;
+        oneItem.innerHTML = `${d.name}`
+        oneItem.setAttribute('target', '_blank')
+
+        let icon = document.createElement('i')
+        icon.classList.add('fa')
+        icon.classList.add('fa-check-circle')
+
+        oneItem.append(icon)
+
+        dom_dataList.append(oneItem);
+
+      })
+
+      if (dom_dataList.height() > $('#daskboard').height())
+        dom_dataList.addClass('dropdown-height')
+      else
+        dom_dataList.removeClass('dropdown-height')
+
+    }));
+
   }
 
 } 

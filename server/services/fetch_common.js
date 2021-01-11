@@ -13,6 +13,17 @@ async function get(endpoint, headers) {
     }
 }
 
+async function fileStreamGet(endpoint, headers) {
+    const options = { headers };
+    const response = await fetch(endpoint, options);
+    if (response.status == 200) {
+        return response.body
+    } else {
+        const message = await response.text(); 
+        throw new Error(response.status+ ' ' + response.statusText + ' ' + message);
+    }
+}
+
 async function post(endpoint, headers, body) {
     const options = { method: 'POST', headers: headers || {}, body: body };
     const response = await fetch(endpoint, options);
@@ -81,5 +92,6 @@ module.exports = {
     post,
     put,
     patch,
-    mydelete
+    mydelete,
+    fileStreamGet
 };

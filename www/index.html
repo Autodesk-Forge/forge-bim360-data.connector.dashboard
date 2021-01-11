@@ -98,56 +98,36 @@
     <div class="row">
       <div id="daskboard" class="col" style="height: 60vh;border:1px solid silver;border-radius:10px; ">
         <div class="row">
-          <div class="col-3" style="height: 30vh;border:1px solid silver;border-radius:10px; ">
-            </br>
-            <canvas id="stat_1"></canvas>  
+          <div class="col-4" style="height: 60vh;border:1px solid silver;border-radius:10px; ">
+            <div >
+              <div class="list-group" id="dataList">
+                <a href="#" class="list-group-item active">
+                Data List
+                </a>
+                <a href="#" class="list-group-item"><i class="fa fa-check-circle" aria-hidden="true"></i>
+                Windows</a>
+                <a href="#" class="list-group-item"><i class="fa fa-check-circle" aria-hidden="true"></i>
+                OS X</a>
+                <a href="#" class="list-group-item"><i class="fa fa-check-circle" aria-hidden="true"></i>
+                Linux</a>
+              </div>
+            </div> 
           </div>
-          <div class="col-3" style="height: 30vh;border:1px solid silver;border-radius:10px; ">
+          
+          <div class="col-4" style="height: 60vh;">
           </br>
-            <canvas id="stat_2"></canvas> 
-          </div>
-          <div class="col-3" style="height: 30vh;border:1px solid silver;border-radius:10px; ">
-          </br>  <canvas id="stat_3"></canvas> 
+            <canvas id="stat_left"></canvas> 
+          </div> 
 
-          </div>
-          <div class="col-3" style="height: 30vh;border:1px solid silver;border-radius:10px; ">
-          </br>  <canvas id="stat_4"></canvas> 
-
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-3" style="height: 30vh;border:1px solid silver;border-radius:10px; ">
-          </br> 
-            <canvas id="stat_5"></canvas>  
-          </div>
-          <div class="col-3" style="height: 30vh;border:1px solid silver;border-radius:10px; ">
-          </br> <canvas id="stat_6"></canvas> 
-          </div>
-          <div class="col-3" style="height: 30vh;border:1px solid silver;border-radius:10px; ">
-          </br> <canvas id="stat_7"></canvas> 
-
-          </div>
-          <div class="col-3" style="height: 30vh;border:1px solid silver;border-radius:10px; ">
-          </br> <canvas id="stat_8"></canvas> 
-
+          <div class="col-4" style="height: 60vh">
+          </br>
+            <canvas id="stat_right"></canvas> 
           </div>
         </div> 
       </div> 
     </div>
     <div class="row">
-      <div id="requests" class="col-7" style="height: 28vh;border:1px solid silver; border-radius:10px; overflow:auto">
-        
-        <div class="clsInProgress" hidden>
-          <div style="text-align: center;">
-            <img src="./img/Bars-1s-200px.svg" class="InProgressImg_table">
-          </div>
-        </div>
-
-        <table class="table table-sm table-striped table-bordered table-hover" id="requestsTable">
-        
-        </table>
-      </div> 
-      <div id="newrequest" class="col-5" style="height: 28vh;border:1px solid silver; border-radius:10px; ">
+      <div id="newrequest" class="col-4" style="height: 28vh;border:1px solid silver; border-radius:10px; ">
         <div class="row">
         </br> 
         </div>
@@ -163,7 +143,7 @@
           <div class="input-group mb-3">
             <div class="input-group-prepend">
             <label><bold>Services</bold></label>
-            &nbsp
+            </br>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="srvAdmin" checked>
               <label class="form-check-label">
@@ -228,8 +208,8 @@
         <div class="input-group mb-3">
           <div class="input-group-prepend">
           <label>Schedule</label>
-        </div>
-        &nbsp  
+          </div>
+          </br> 
         <div class="form-check">
           <input class="form-check-input" type="radio" name="schedule" id="one_time" value="option1" checked>
           <label class="form-check-label">
@@ -274,10 +254,10 @@
 
         <div class="row">  
           <div class="col-6"> 
-          <div class="input-group datetimepicker" >
+          <div class="input-group datetimepicker "  >
             <span class="input-group-addon">Effective From</span>&nbsp
             <input class="set-due-date form-control" data-provide="datepicker"  id="startDate"/>
-            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span> 
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
           </div>  
         </div>
         <div class="col-6"> 
@@ -285,7 +265,7 @@
           <div class="input-group datetimepicker" >
             <span class="input-group-addon">Effective To</span>&nbsp
             <input class="set-due-date form-control" data-provide="datepicker" id="endDate"/>
-            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span> 
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
           </div> 
         </div> 
         </div>
@@ -301,6 +281,19 @@
           </div>
          </div>
         </div>
+      <div id="requests" class="col-8" style="height: 28vh;border:1px solid silver; border-radius:10px; overflow:auto">
+        
+        <div class="clsInProgress" hidden>
+          <div style="text-align: center;">
+            <img src="./img/Bars-1s-200px.svg" class="InProgressImg_table">
+          </div>
+        </div>
+
+        <table class="table table-sm table-striped table-bordered table-hover" id="requestsTable">
+        
+        </table>
+      </div> 
+    
 
       </div> 
     </div>

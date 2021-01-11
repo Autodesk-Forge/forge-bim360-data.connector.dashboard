@@ -37,7 +37,8 @@
 'use strict';
 const config = require('../config')
 const utility = require('../utility')
-const { get, post, patch, mydelete } = require('./fetch_common')
+const { get, post, patch, mydelete,fileStreamGet } = require('./fetch_common')
+const fs = require("fs"); 
 
 module.exports = {
     getRequests,
@@ -154,13 +155,13 @@ async function getOneData(hubId,jobId,dataKey) {
 
 async function downloadData(input) {
 
-    const headers = { method: 'GET' };
-    const res = await get(input.signedUrl, headers);
+    //const headers = config.endpoints.httpHeaders(config.credentials.token_3legged)
+    const res = await fileStreamGet(input.signedUrl, {});
     const fileStream = fs.createWriteStream(input.path + input.name);
 
     await new Promise((resolve, reject) => {
-        res.body.pipe(fileStream);
-        res.body.on("error", (err) => {
+        res.pipe(fileStream);
+        res.on("error", (err) => {
             console.log(`download one data failed:${input.jobId},${input.name},${err}`)  
             reject(err);
         });
