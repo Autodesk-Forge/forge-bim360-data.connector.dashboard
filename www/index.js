@@ -1,6 +1,7 @@
 const global_oAuth = new oAuth()
 const global_DataManagement = new DataManagement()
 const global_DataConnector = new DataConnector()
+const global_DataDashboard= new DataDashboard()
 
 $(document).ready(function () {
 

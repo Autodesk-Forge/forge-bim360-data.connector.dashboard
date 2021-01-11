@@ -255,25 +255,35 @@ class DataConnector {
       const dataList = await this.getOneJobDatalist(hub_id_without_b, jobId)
 
       //render the data list
+
+      //update title
+      $('#dataTitle').innerHTML = `Data List - Job ${text}` 
+
       let dom_dataList = $('#dataList')
-      dom_dataList.empty()
-
-      //add title bar 
-      let oneItem = document.createElement('a')
-      oneItem.classList.add('list-group-item')
-      oneItem.classList.add('active')
-      oneItem.href = "#";
-      oneItem.innerHTML = `Data List - Job ${text}`
-      dom_dataList.append(oneItem);
-
+      dom_dataList.empty() 
      
+      let innerHTML = ''
       dataList.forEach(async d => {
 
-        oneItem = document.createElement('a')
-        oneItem.classList.add('list-group-item')
-        oneItem.href = `/dc/requests/download/${hub_id_without_b}/${jobId}/${d.name}`;
-        oneItem.innerHTML = `${d.name}`
-        oneItem.setAttribute('target', '_blank')
+        
+        global_DataDashboard._dashboardDefs.includes(d.name)?
+        innerHTML += 
+        `<li class="list-group-item d-flex justify-content-between align-items-center" data="${hub_id_without_b}|${jobId}|${d.name}">`
+        +`<i class="fa fa-file pr-3" aria-hidden="true"></i>${d.name}`
+        + `<i class="fa fa-download ml-auto pr-3" aria-hidden="true"></i>`
+        + `<i class="fa fa-tachometer" aria-hidden="true"></i></li>` :
+        innerHTML += 
+        `<li class="list-group-item d-flex justify-content-between align-items-center" data="${hub_id_without_b}|${jobId}|${d.name}">`
+        +`<i class="fa fa-file pr-3" aria-hidden="true"></i>${d.name}`
+        + `<i class="fa fa-tachometer" aria-hidden="true"></i></li>`
+    
+
+
+        // oneItem = document.createElement('li')
+        // oneItem.classList.add('list-group-item')
+        // oneItem.href = `/dc/requests/download/${hub_id_without_b}/${jobId}/${d.name}`;
+        // oneItem.innerHTML = `${d.name}`
+        // oneItem.setAttribute('target', '_blank')
 
         //let icon = document.createElement('i')
         //icon.classList.add('fa')
@@ -281,18 +291,46 @@ class DataConnector {
 
         //oneItem.append(icon)
 
-        dom_dataList.append(oneItem);
+        //dom_dataList.append(oneItem);
         
       })
+
+      dom_dataList.html(innerHTML)
 
       if (dom_dataList.height() > $('#daskboard').height())
         dom_dataList.addClass('dropdown-height')
       else
         dom_dataList.removeClass('dropdown-height')
 
- //temp test:
- var onedata = 'issues_issues.csv'
-        await this.getOneDataStream(hub_id_without_b,jobId,onedata)
+        //temp test:
+        //var onedata = 'issues_issues.csv'
+        //
+
+        $('.list-group-item i').on('click', function() {
+          
+          const data = $(this).closest('.list-group-item').attr('data')
+          const hubId = data.split('|')[0]
+          const jobId = data.split('|')[1]
+          const dataKey = data.split('|')[2]
+
+          if($(this).hasClass('fa-download')){
+            window.location  = `/dc/requests/download/${hubId}/${jobId}/${dataKey}`
+
+          } 
+          else if($(this).hasClass('fa-tachometer')){
+
+            (async (hubId,jobId,dataKey)=>{
+                const data = await this.getOneDataStream(hubId,jobId,dataKey)
+                //send to dashboard 
+                global_DataDashboard.destoryAllViews()
+                global_DataDashboard.configData(dataKey,data) 
+
+            })(hubId,jobId,dataKey)
+          }
+          else{
+            //do nothing
+          } 
+        })
 
     }));
 
