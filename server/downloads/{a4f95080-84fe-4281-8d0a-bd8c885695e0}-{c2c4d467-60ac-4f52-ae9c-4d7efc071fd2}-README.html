@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional //EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>BIM 360 Data Connector</title>
+  	<style>
+    	body
+    	{ 
+        background: #ECECEA;
+      	color: #222222;
+      	font-size: 12px;
+      	font-family: Arial;
+        margin: 0px 0px 0px 0px;
+      	padding: 0px;
+    	}
+    	h1
+    	{
+    	  font-weight: bold;
+    		font-size: 26px;
+    		background-color: #99CCFF;
+    		padding: 12px 6px 12px 6px;
+    		margin: 6px 0px 6px 0px;
+        border-radius: 5px;
+        border-radius: 5px;
+    	}
+    	h2
+    	{
+    	  font-weight: bold;
+    		font-size: 20px;
+    		background-color: #99CCFF;
+    		padding: 6px 6px 6px 6px;
+    		margin: 18px 0px 6px 0px;
+        border-radius: 5px;
+        border-radius: 5px;
+    	}
+    	hr
+    	{
+    	  color: #cccccc;
+    	  height: 1px;
+    	}
+    	p 
+    	{
+    		margin-top: 6px;
+    	}
+
+      #wrap
+      {
+        background-color: white;
+      	margin: 24px 24px 24px 24px;
+      	padding: 12px 18px 24px 18px;
+
+        border-radius: 5px;
+        border-radius: 5px;
+        text-align: left; 
+        box-shadow: 0 1px 8px 0px rgba(0,0,0,0.3);
+      }
+      
+      #content 
+      {
+    	  background-color: white;
+      	margin: 0px auto 0px;
+      	padding: 0px;
+      	line-height: 18px;
+      	min-height: 600px;	
+      }
+
+      /************************************************
+       *	Table formatting
+       ************************************************/
+      table {
+        border-collapse: collapse;
+      }
+      
+      td, th {
+        border: 1px solid #ddd;
+        padding: 3px;
+      }
+
+      tr:nth-child(odd){background-color: #f2f2f2;}
+      /* tr:hover {background-color: #ddd;} */
+
+      th {
+        padding-top: 3px;
+        padding-bottom: 3px;
+        text-align: left;
+        background-color: #83B93F;
+        color: white;
+      }
+            
+      /************************************************
+       *	Copyright  									*
+       ************************************************/
+      #copyright {
+      	background: #ccc;
+      	margin: 24px 24px 24px 24px;
+      	padding: 6px 12px 18px 12px;
+      	font-family: Verdana, Tahoma, Verdana;
+      	font-size: 12px;
+      	text-align: center;
+      
+        box-shadow: 0 1px 3px 0px rgba(0,0,0,0.3);
+      }
+      	
+      .copyright {
+      	width: 920px;
+      	margin: 0px auto 0px;
+      	padding: 15px 0px 0px 0px;
+      	/*rhp border-top: 1px solid #65ADC3; */
+      	}
+      	
+      #copyright p {
+      	color: #444;
+      	margin: 0px;	
+      	padding: 0px;
+      	}
+      	
+      #copyright a {
+      	color: #444;
+      	text-decoration: none;
+      	}
+      
+      #copyright a:hover {
+      	color: #444;
+      	text-decoration: underline;
+      	}
+     
+     #header
+     {
+    		background-color: #C4E1FF;
+    		font-weight: bold;
+     }
+      
+  	</style>
+
+  </head>
+  <body>
+
+  <div id="wrap">
+  <div id="content">
+
+<h1>BIM 360 Data Connector</h1>
+<h2>Overview</h2>
+A common feature request for Autodesk&#39;s BIM 360 solution has been the ability to connect Business Intelligence (BI) tools to analyze and process the data created in the various BIM 360 offerings. 
+The BIM 360 Data Connector is the answer for this requirement. The Data Connector allows users to request and download data housed in 
+the BIM 360 Data Platform in a well defined schema/format. This data can then be 
+used for further analysis and to drive customer specific workflows.<h2>Data Schema &amp; Design</h2>
+A central aspect to the Data Connector is the data schema for BIM 360 data extracts.
+The data is extracted into a well defined schema much in the way a 
+traditional relational database schema is designed. Each service group is a separate 
+&quot;database&quot; schema design and each individual table in this design will be delivered via 
+separate CSV file extracts. 
+When a data request is completed, the Data Connector will generate a ZIP archive 
+file that will be made available for download by the user. The naming conventions 
+and directory structure for ZIP file extracts are the following:<ul>
+	<li><b>autodesk_data_extract.zip</b><ul>
+		<li>&lt;schema1&gt;_&lt;table_name1&gt;.csv</li>
+		<li>&lt;schema1&gt;_&lt;table_name2&gt;.csv</li>
+		<li>&lt;schema1&gt;_&lt;table_name3&gt;.csv</li>
+		<li>&lt;schema2&gt;_&lt;table_name1&gt;.csv</li>
+		<li>&lt;schema2&gt;_&lt;table_name2&gt;.csv</li>
+		<li>&lt;schema2&gt;_&lt;table_name3&gt;.csv</li>
+		<li>etc...</li>
+		<li><b>docs &lt;directory&gt;</b><ul>
+			<li>README.html - this document</li>
+			<li><b>schemas &lt;directory&gt;</b><ul>
+			<li>&lt;schema&gt;.html - detailed schema documentation</li>
+		</ul>
+			</li>
+		</ul>
+		</li>
+		<li>metadata.csv - a file container simple metadata on this extraction. 
+		The columns for this file are:<ul>
+		<li>created_at - the timestamp for the extraction creation</li>
+		<li>region - the region where this data exists. Possible values: US: 
+		United States / EMEA: Europe</li>
+	</ul>
+		</li>
+	</ul>
+	</li>
+</ul>
+<h2>Schema Descriptions<br/></h2>
+
+<p>The following are the service groups included in this release of the BIM 360 
+Data Connector. Browse to the schema below for details on the schema design. </p>
+
+<ul>
+	<li><a href="schemas/admin.html">admin</a></li>
+	<li><a href="schemas/cost.html">cost</a></li>
+	<li><a href="schemas/checklists.html">checklists</a></li>
+	<li><a href="schemas/dailylogs.html">dailylogs</a></li>
+	<li><a href="schemas/issues.html">issues</a></li>
+	<li><a href="schemas/locations.html">locations</a></li>
+	<li><a href="schemas/rfis.html">rfis</a></li>
+	<li><a href="schemas/submittals.html">submittals</a></li>
+</ul>
+	
+<h2>What's New<br/></h2>
+
+<ul>
+	<li><b>October, 2020</b><ul>
+	<li><a href="schemas/submittals.html">submittals</a>: New view added: 
+	submittals-item_distribution_list_users</li>
+	<li>metadata.csv file has been added to extractions (see details above)</li>
+</ul>
+	
+	</li>
+	<li><b>July, 2020</b><ul>
+	<li><a href="schemas/admin.html">admin</a> Schema has additional 
+	columns for user information (User Status, Date user added to a Project)</li>
+</ul>
+	
+	<ul>
+	<li><a href="schemas/checklists.html">checklists</a> Schema has additional 
+	columns to checklists table and new tables: 
+	<ul style="color: rgb(34, 34, 34); font-family: Arial; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial;">
+		<li><a href="schemas/checklists.html#checklist_attachments">checklist_attachments</a></li>
+		<li><a href="schemas/checklists.html#checklist_item_doc_attachments">
+		checklist_item_doc_attachments</a></li>
+	</ul>
+	</li>
+</ul>
+	
+	</li>
+	<li><b>July, 2020</b><ul>
+	<li><a href="schemas/issues.html">issues</a> Schema has additional columns 
+	to the
+	<a href="schemas/issues.html#issues">
+	issues</a> table (start_date, deleted_at, snapshot_urn, published)</li>
+</ul>
+	
+	</li>
+	<li><b>June, 2020</b><ul>
+	<li><a href="schemas/checklists.html">checklists</a> New column in the 
+	<a href="schemas/checklists.html#checklist_items">checklist_items</a> table (<b>answer_type</b>) 
+	for multiple selection item answer resolution</li>
+</ul>
+	
+	</li>
+	<li><b>May, 2020</b><ul>
+	<li><a href="schemas/issues.html">issues</a> Schema has additional table:<ul>
+	<li><a href="schemas/issues.html#checklist_mappings">checklist_mappings</a> 
+	- the association between Issues and Checklist items</li>
+</ul>
+	
+	</li>
+</ul>
+	
+	</li>
+	<li><b>April 24, 2020</b><ul>
+	<li><a href="schemas/locations.html">locations</a> Schema Extract file 
+	Renamed<ul>
+	<li>locations.tree has been renamed to locations.trees for consistency</li>
+</ul></li>
+	<li><a href="schemas/issues.html">issues</a> Custom Attributes are now 
+	available as part of the issues Schema<ul>
+	<li>
+	<a href="schemas/issues.html#custom_attributes_mappings">
+	custom_attributes_mappings</a></li>
+	<li>
+	<a href="schemas/issues.html#custom_attribute_list_values">
+	custom_attribute_list_values</a></li>
+	<li>
+	<a href="schemas/issues.html#custom_attributes">
+	custom_attributes</a></li>
+</ul></li>
+</ul></li>
+	<li><b>March 24, 2020</b><ul>
+	<li>New Data Sources Available:<ul>
+	<li><a href="schemas/cost.html">cost</a></li>
+	<li><a href="schemas/submittals.html">submittals</a></li>
+</ul>
+	
+	</li>
+</ul>
+	
+	</li>
+</ul>
+	
+</div>
+  </div>
+
+    <div id="copyright">
+      <div class="copyright">
+    	  <p>&copy; 2020 Autodesk, Inc. | 
+        	<a target="_blank" href="https://bim360.autodesk.com/">BIM 360</a> | 
+        	<a target="_blank" href="https://www.autodesk.com/company">About Autodesk</a> </p>
+      </div>
+    </div>
+    
+  </body>
+</html>

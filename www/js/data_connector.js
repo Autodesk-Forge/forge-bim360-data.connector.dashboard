@@ -174,6 +174,21 @@ class DataConnector {
     })
   }
 
+  async getOneDataStream(hubId, jobId,dataKey) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `/dc/requests/dataStream/${hubId}/${jobId}/${dataKey}`,
+        type: 'GET',
+        success: function (res) {
+          if (res != null && res != [])
+            resolve(res)
+          else
+            resolve(null)
+        }
+      })
+    })
+  }
+
   async createRequest(hubId, body) {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -251,6 +266,7 @@ class DataConnector {
       oneItem.innerHTML = `Data List - Job ${text}`
       dom_dataList.append(oneItem);
 
+     
       dataList.forEach(async d => {
 
         oneItem = document.createElement('a')
@@ -259,20 +275,24 @@ class DataConnector {
         oneItem.innerHTML = `${d.name}`
         oneItem.setAttribute('target', '_blank')
 
-        let icon = document.createElement('i')
-        icon.classList.add('fa')
-        icon.classList.add('fa-check-circle')
+        //let icon = document.createElement('i')
+        //icon.classList.add('fa')
+        //icon.classList.add('fa-check-circle')
 
-        oneItem.append(icon)
+        //oneItem.append(icon)
 
         dom_dataList.append(oneItem);
-
+        
       })
 
       if (dom_dataList.height() > $('#daskboard').height())
         dom_dataList.addClass('dropdown-height')
       else
         dom_dataList.removeClass('dropdown-height')
+
+ //temp test:
+ var onedata = 'issues_issues.csv'
+        await this.getOneDataStream(hub_id_without_b,jobId,onedata)
 
     }));
 

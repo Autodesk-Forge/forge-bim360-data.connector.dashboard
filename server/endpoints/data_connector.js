@@ -199,11 +199,9 @@ router.get('/requests/download/:hubId/:jobId/:dataKey', async (req, res, next) =
 
     const dataPath = path.join(__dirname, '/../downloads/');;
     const dataName = `{${hubId}}-{${jobId}}-${dataKey}`
-    if (fs.existsSync(dataPath + dataName)) {
-      //has downloaded before
-      res.download(dataPath + dataName);
-    } else {
-      //download
+    if (!fs.existsSync(dataPath + dataName)) {
+      //has not downloaded before 
+      //download it
       const data = await dcServices.getOneData(hubId, jobId, dataKey)
 
       const input = {
@@ -212,8 +210,41 @@ router.get('/requests/download/:hubId/:jobId/:dataKey', async (req, res, next) =
         name: dataName
       }
       await dcServices.downloadData(input)
-      res.download(dataPath + dataName);
-    } 
+    }
+    res.download(dataPath + dataName);
+
+
+  } catch (e) {
+    // here goes out error handler
+    console.log('get one data failed: ' + e.message)
+    res.status(500).end()
+  }
+});
+
+router.get('/requests/dataStream/:hubId/:jobId/:dataKey', async (req, res, next) => {
+
+  try {
+    const hubId = req.params['hubId']
+    const jobId = req.params['jobId']
+    const dataKey = req.params['dataKey']
+
+    const dataPath = path.join(__dirname, '/../downloads/');;
+    const dataName = `{${hubId}}-{${jobId}}-${dataKey}`
+    if (!fs.existsSync(dataPath + dataName)) {
+      //has not downloaded before 
+      //download it
+      const data = await dcServices.getOneData(hubId, jobId, dataKey)
+
+      const input = {
+        signedUrl: data.signedUrl,
+        path: dataPath,
+        name: dataName
+      }
+      await dcServices.downloadData(input)
+    }
+    //read the file
+    const fileStream = fs.readFileSync(dataPath + dataName)
+    res.send(fileStream)
 
   } catch (e) {
     // here goes out error handler
