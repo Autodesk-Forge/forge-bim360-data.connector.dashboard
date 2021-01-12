@@ -36,6 +36,48 @@ class DataDashboard {
      }) 
   })}
 
+  renderDashboard(labels,dataTotals,colors,title,chartType,dom){
+    var chartData = {
+      datasets: [{
+        data: dataTotals,
+        backgroundColor: colors
+      }],
+      labels: labels
+    };
+
+    var config = {
+      type: chartType,
+      data: chartData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        title: {
+          display: true,
+          text: title
+        },
+        tooltips: {
+          mode: 'index',
+          intersect: true
+        },
+        legend: {
+          display: true
+        },
+        plugins: {
+          datalabels: {
+            display: true,
+            align: 'center',
+            anchor: 'center'
+          }
+        }
+      }
+    }
+
+    const canvas = document.getElementById(dom);
+    const ctx = canvas.getContext('2d');
+    new Chart(ctx, config);
+  }
+
   async configData(hubId,jobId,dataKey){
 
     const data = await global_DataConnector.getOneDataStream(hubId,jobId,dataKey)
@@ -79,7 +121,7 @@ class DataDashboard {
         //find issues due in this week
         const weekDueStart = new Date()
         var dateAtOneWeek = weekDueStart; 
-        dateAtOneWeek.setDate(dateStart.getDate() + 7);
+        dateAtOneWeek.setDate(weekDueStart.getDate() + 7);
         dateAtOneWeek = dateAtOneWeek.getTime();
 
         var due_thisWeek_Issues = one_project_issues.filter(
@@ -87,7 +129,7 @@ class DataDashboard {
           && x.due_date!=undefined
           && x.due_date!=''
           && new Date(x.due_date).getTime() > currentTime && new Date(x.due_date).getTime() < dateAtOneWeek
-          && x.status != 'close')
+          && x.status != 'close') 
 
          issues.push({
            project_id:bim360_project_id,
@@ -97,23 +139,66 @@ class DataDashboard {
            due_thisWeek_issues_count:due_thisWeek_Issues,
            issue_types:[]
         })                     
-      })
+      }) 
+
       //issue by projects, sorting the top 10 projects by issues count
       issues.sort(function(a, b){
-        return b.project_issues.length - a.project_issues.length;
-      });
+        return b.project_issues_count - a.project_issues_count;
+      });  
+      var len = issues.length < 10? issues.length:10
+      var dashBoardData = issues.slice(0, len).map(i => {
+        return i
+      }) 
+      var labels = [],dataTotals = [], colors = []; 
+      for (var index in dashBoardData) {
+        labels.push(dashBoardData[index].project_name);
+        dataTotals.push(dashBoardData[index].project_issues_count);
+        colors.push(this.random_rgba())
+      }
 
-
-
-
-
-      //top overdue projects
+      this.renderDashboard(labels,dataTotals,colors,'Issues by Projects','horizontalBar','issueByProjects')
+  
+    
+      //overdue issues by projects top 5
       issues.sort(function(a, b){
-        return b.bim360_project_issues.length - a.bim360_project_issues.length;
-      });
+        return b.overdue_issues_count - a.overdue_issues_count;
+      }); 
+
+       len = issues.length < 5? issues.length:5
+      var dashBoardData = issues.slice(0, len).map(i => {
+        return i
+      }) 
+      labels = [];dataTotals = [];colors = [];
+ 
+      for (var index in dashBoardData) {
+        labels.push(dashBoardData[index].project_name);
+        dataTotals.push(dashBoardData[index].overdue_issues_count);
+        colors.push(this.random_rgba())
+      } 
+
+      this.renderDashboard(labels,dataTotals,colors,'Top 5 Projects withOverdue Issues','pie','topOverdue')
 
 
-      //issue due this week
+      //due this week  by projects top 10
+      issues.sort(function(a, b){
+        return b.due_thisWeek_issues_count - a.due_thisWeek_issues_count;
+      }); 
+
+
+      len = issues.length < 10? issues.length:10
+      var dashBoardData = issues.slice(0, len).map(i => {
+        return i
+      }) 
+       labels = [];dataTotals = [];colors = [];
+ 
+      for (var index in dashBoardData) {
+        labels.push(dashBoardData[index].project_name);
+        dataTotals.push(dashBoardData[index].due_thisWeek_issues_count);
+        colors.push(this.random_rgba())
+      } 
+
+      this.renderDashboard(labels,dataTotals,colors,'Top 10 Projects Due Issues This Week','horizontalBar','overdueThisWeek')
+
 
     }else if(dataKey == 'admin_users.csv'){
 

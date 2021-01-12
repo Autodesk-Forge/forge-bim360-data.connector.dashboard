@@ -281,7 +281,7 @@ class DataConnector {
 
       dom_dataList.html(innerHTML)
 
-      if (dom_dataList.height() > $('#daskboard').height())
+      if (dom_dataList.height() > $('#dashboard').height())
         dom_dataList.addClass('dropdown-height')
       else
         dom_dataList.removeClass('dropdown-height')
