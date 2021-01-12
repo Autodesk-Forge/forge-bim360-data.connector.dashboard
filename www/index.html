@@ -3,8 +3,7 @@
 
 <head>
   <title>BIM360 Data Connector Dashboard </title>
-  <link rel="shortcut icon"
-    href="/img/favicon.ico">
+  <link rel="shortcut icon" href="/img/favicon.ico">
 
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,15 +26,15 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 
- <!-- Chart.js for dashboard -->   
- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.0/dist/Chart.min.js"></script>
- <script src="https://chartjs-plugin-datalabels.netlify.com/chartjs-plugin-datalabels.js"></script>
- <script src="https://chartjs-plugin-datalabels.netlify.com/samples/utils.js"></script>
+<!-- Chart.js for dashboard -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.0/dist/Chart.min.js"></script>
+<script src="https://chartjs-plugin-datalabels.netlify.com/chartjs-plugin-datalabels.js"></script>
+<script src="https://chartjs-plugin-datalabels.netlify.com/samples/utils.js"></script>
 
 <script src="./js/nav.help.js"></script>
 <script src="./js/utility.js"></script>
 
-<script src="./js/oauth.js"></script> 
+<script src="./js/oauth.js"></script>
 <script src="./js/data_management.js"></script>
 <script src="./js/data_connector.js"></script>
 
@@ -43,13 +42,14 @@
 <script src="./js/dc.dashboard.js"></script>
 <script src="./js/dc.request.create.js"></script>
 <script src="./js/dc.requests.view.js"></script>
+<script src="./js/dashboard.js"></script>
 
 
 <script src="./libs/jquery.csv.min.js"></script>
 
 <link rel="stylesheet" href="css/main.css">
 <script src="./libs/bootstrap-input-spinner.js"></script>
-<link rel="stylesheet" href="css/bootstrap-datepicker.min.css" /> 
+<link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
 <script src="./libs/bootstrap-datepicker.min.js"></script>
 
 <script src="./index.js"></script>
@@ -69,7 +69,7 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="hubs_list">
             <div id="hubSpinner" class="spinner-border" style="display:none;margin: auto"></div>
           </div>
-        </li> 
+        </li>
       </ul>
 
       <ul class="navbar-nav ml-auto mx-auto">
@@ -101,70 +101,73 @@
     <div class="row">
       <div id="newrequest" class="col-4" style="height: 28vh;border:1px solid silver; border-radius:10px; ">
         <div class="row">
-        </br> 
+          </br>
         </div>
         <div class="row">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="inputGroup-sizing-default">Description</span>
             </div>
-            <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" id="description">
+            <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+              id="description">
           </div>
         </div>
         <div class="row">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-            <label><bold>Services</bold></label>
-            </br>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="srvAdmin" checked>
-              <label class="form-check-label">
-                Admin
+              <label>
+                <bold>Services</bold>
               </label>
+              </br>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="srvAdmin" checked>
+                <label class="form-check-label">
+                  Admin
+                </label>
+              </div>
             </div>
-          </div>
-          &nbsp
+            &nbsp
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="srvIssue" checked>
-              <label class="form-check-label" >
+              <label class="form-check-label">
                 Issue
               </label>
             </div>
             &nbsp
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="srvRfi" checked>
-              <label class="form-check-label" >
+              <label class="form-check-label">
                 Rfi
               </label>
-            </div> 
+            </div>
             &nbsp
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="srvChecklist" checked>
               <label class="form-check-label">
                 checklist
               </label>
-            </div> 
-            &nbsp
+            </div>
+            </p>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="srvCost" checked>
               <label class="form-check-label">
                 Cost
               </label>
-            </div>  
+            </div>
 
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="srvDailylog" checked>
               <label class="form-check-label">
                 Dailylog
               </label>
-            </div>  
+            </div>
 
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="srvLocation" checked>
               <label class="form-check-label">
                 Location
               </label>
-            </div>  
+            </div>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="srvSubmittal" checked>
               <label class="form-check-label">
@@ -172,129 +175,124 @@
               </label>
             </div>
 
-           </div>
-  
           </div>
+
+        </div>
 
         <div class="row">
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-          <label>Schedule</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label>Schedule</label>
+            </div>
+            </br>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="schedule" id="one_time" value="option1" checked>
+              <label class="form-check-label">
+                One Time
+              </label>
+            </div>
+            &nbsp
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="schedule" id="day">
+              <label class="form-check-label">
+                Day
+              </label>
+            </div>
+            &nbsp
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="schedule" id="week">
+              <label class="form-check-label">
+                Week
+              </label>
+            </div>
+            &nbsp
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="schedule" id="month">
+              <label class="form-check-label">
+                Month
+              </label>
+            </div>
+            &nbsp
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="schedule" id="year">
+              <label class="form-check-label">
+                Year
+              </label>
+            </div>
+            &nbsp &nbsp Interval &nbsp
+            <div>
+              <input id="interval" type="number" value="1" min="1" max="1000" step="1" style="width:50px;" />
+            </div>
+
           </div>
-          </br> 
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="schedule" id="one_time" value="option1" checked>
-          <label class="form-check-label">
-            One Time
-          </label>
-        </div>
-          &nbsp
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="schedule" id="day">
-            <label class="form-check-label">
-              Day
-            </label>
-          </div>
-          &nbsp
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="schedule" id="week">
-            <label class="form-check-label">
-              Week
-            </label>
-          </div> 
-          &nbsp
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="schedule" id="month">
-            <label class="form-check-label">
-              Month
-            </label>
-          </div> 
-          &nbsp
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="schedule" id="year">
-            <label class="form-check-label">
-              Year
-            </label>
-          </div>  
-          &nbsp &nbsp Interval &nbsp
-          <div> 
-            <input id="interval" type="number" value="1" min="1" max="1000" step="1" style="width:50px;"/> 
-          </div>
-         
-         </div> 
         </div>
 
-        <div class="row">  
-          <div class="col-6"> 
-          <div class="input-group datetimepicker "  >
-            <span class="input-group-addon">Effective From</span>&nbsp
-            <input class="set-due-date form-control" data-provide="datepicker"  id="startDate"/>
-            <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-          </div>  
-        </div>
-        <div class="col-6"> 
-
-          <div class="input-group datetimepicker" >
-            <span class="input-group-addon">Effective To</span>&nbsp
-            <input class="set-due-date form-control" data-provide="datepicker" id="endDate"/>
-            <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-          </div> 
-        </div> 
-        </div>
-
-      </br>
-        <div class="row"> 
-          <div class="col-4" >
+        <div class="row">
+          <div class="col-6">
+            <div class="input-group datetimepicker ">
+              <span class="input-group-addon">Effective From</span>&nbsp
+              <input class="set-due-date form-control" data-provide="datepicker" id="startDate" />
+              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
           </div>
-          <div class="col-4" >
+          <div class="col-6">
+
+            <div class="input-group datetimepicker">
+              <span class="input-group-addon">Effective To</span>&nbsp
+              <input class="set-due-date form-control" data-provide="datepicker" id="endDate" />
+              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
+          </div>
+        </div>
+
+        </br>
+        <div class="row">
+          <div class="col-4">
+          </div>
+          <div class="col-4">
             <button id="createReq" type="button" class="btn btn-lg btn-primary">Create Request</button>
           </div>
-          <div class="col-4" >
+          <div class="col-4">
           </div>
-         </div>
         </div>
+      </div>
       <div id="requests" class="col-8" style="height: 28vh;border:1px solid silver; border-radius:10px; overflow:auto">
-        
-        <div class="clsInProgress" hidden>
-          <div style="text-align: center;">
-            <img src="./img/Bars-1s-200px.svg" class="InProgressImg_table">
-          </div>
-        </div>
-
         <table class="table table-sm table-striped table-bordered table-hover" id="requestsTable">
-        
+          <div class="req_progress" hidden>
+            <div style="text-align: center;">
+              <img src="./img/Bars-1s-10px.svg" class="InProgressImg">
+            </div>
+          </div>
         </table>
-      </div> 
-    
 
-      </div> 
+      </div>
+
+    </div>
 
     <div class="row">
-      <div id="daskboard" class="col" style="height: 60vh;border:1px solid silver;border-radius:10px; ">
+      <div class="col" style="height: 60vh;border:1px solid silver;border-radius:10px; ">
         <div class="row">
           <div class="col-4" style="height: 60vh;border:1px solid silver;border-radius:10px; ">
-            <div >
-              <div class="list-group"> 
-                <div id="dataTitle" class = "list-group-item active">
-                  Data List - Job StartAt .....
-                </div> 
+            <h5 class="card-title" style="text-align: center;">Data List</h5>
+            <div class="datalist_progress" hidden>
+              <div style="text-align: center;">
+                <img src="./img/Bars-1s-200px.svg" class="InProgressImg_table">
               </div>
-            </div> 
+            </div>
+            <div class="list-group" id="dataList" style="text-align: left;">
+            </div>
           </div>
-          
-          <div class="col-4" style="height: 60vh;">
-          </br>
-            <canvas id="stat_left"></canvas> 
-          </div> 
 
-          <div class="col-4" style="height: 60vh">
-          </br>
-            <canvas id="stat_right"></canvas> 
+          <div id="dashboard" class="col-4" style="height: 60vh;">
+            <div class="dashboard_progress" hidden>
+              <div style="text-align: center;">
+                <img src="./img/Bars-1s-200px.svg" class="InProgressImg_table">
+              </div>
+            </div>
           </div>
-        </div> 
-      </div> 
-    </div>
-   
+        </div>
+      </div>
+
     </div>
   </div>
 

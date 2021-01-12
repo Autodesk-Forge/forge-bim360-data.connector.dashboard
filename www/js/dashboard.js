@@ -11,7 +11,7 @@ class DataDashboard {
       stat_right_view:null 
     }
     this._dashboardDefs =[
-      'issues-issues.csv',
+      'issues_issues.csv',
       'admin_users.csv',
       'checklists_checklists.csv'
     ]
@@ -24,9 +24,96 @@ class DataDashboard {
       this._view.stat_right_view.destroy();
   } 
 
-  configData(dataKey,data){
+  async getRenderHTML(html) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: html,
+        success: function (data) {
+          resolve(data)
+        }, error: function (error) {
+          reject(error)
+        }
+     }) 
+  })}
 
-    if(dataKey == 'issues-issues.csv'){
+  async configData(hubId,jobId,dataKey){
+
+    const data = await global_DataConnector.getOneDataStream(hubId,jobId,dataKey)
+    var csvData = $.csv.toObjects(data)
+
+    if(dataKey == 'issues_issues.csv'){
+
+      //add tabs, each tab one chart 
+      const issueDashboardHTML = await this.getRenderHTML('issue_dashboard.html')
+      $('#dashboard').html( issueDashboardHTML) 
+      //some definitions data
+      const adminUsers = await global_DataConnector.getOneDataStream(hubId,jobId,'admin_users.csv')
+      const csvAdminUsers = $.csv.toObjects(adminUsers)
+
+      const adminProjects = await global_DataConnector.getOneDataStream(hubId,jobId,'admin_projects.csv')
+      const csvAminProjects = $.csv.toObjects(adminProjects)
+
+      const issueTypes = await global_DataConnector.getOneDataStream(hubId,jobId,'issues_issue_types.csv')
+      const csvIssueTypes = $.csv.toObjects(issueTypes)
+
+      //map meaningful name of issue type
+
+      csvData = csvData.map(function(a) {
+        a.issue_type_name =  csvIssueTypes.find(x=>x.issue_type_id == a.type_id ).issue_type
+        return a;
+      });
+
+      //grouped by projects
+      var issues =[]
+      csvAminProjects.forEach(async p=>{
+         const bim360_project_id = p.id
+         const currentTime = (new Date()).getTime()
+         const one_project_issues = csvData.filter(x=>x.bim360_project_id == bim360_project_id)
+         //find overdue and not-closed issues
+         var overDue_OpenIssues = one_project_issues.filter(
+           x=>x.due_date!=null 
+           && x.due_date!=undefined
+           && x.due_date!=''
+           && new Date(x.due_date).getTime() < currentTime
+           && x.status != 'close')
+        //find issues due in this week
+        const weekDueStart = new Date()
+        var dateAtOneWeek = weekDueStart; 
+        dateAtOneWeek.setDate(dateStart.getDate() + 7);
+        dateAtOneWeek = dateAtOneWeek.getTime();
+
+        var due_thisWeek_Issues = one_project_issues.filter(
+          x=>x.due_date!=null 
+          && x.due_date!=undefined
+          && x.due_date!=''
+          && new Date(x.due_date).getTime() > currentTime && new Date(x.due_date).getTime() < dateAtOneWeek
+          && x.status != 'close')
+
+         issues.push({
+           project_id:bim360_project_id,
+           project_name:p.name,
+           project_issues_count:one_project_issues.length,
+           overdue_issues_count:overDue_OpenIssues.length,
+           due_thisWeek_issues_count:due_thisWeek_Issues,
+           issue_types:[]
+        })                     
+      })
+      //issue by projects, sorting the top 10 projects by issues count
+      issues.sort(function(a, b){
+        return b.project_issues.length - a.project_issues.length;
+      });
+
+
+
+
+
+      //top overdue projects
+      issues.sort(function(a, b){
+        return b.bim360_project_issues.length - a.bim360_project_issues.length;
+      });
+
+
+      //issue due this week
 
     }else if(dataKey == 'admin_users.csv'){
 

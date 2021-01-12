@@ -179,8 +179,8 @@ body {
 
 
 .InProgressImg{
-  width: 80%;
-  height: 80%;
+  width: 50%;
+  height: 50%;
 }
 
 .InProgressImg_table{
@@ -191,3 +191,4 @@ body {
 .dropdown-height {
   height:60vh;
 }
+ 

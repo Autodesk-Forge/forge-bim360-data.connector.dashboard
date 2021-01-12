@@ -243,6 +243,7 @@ class DataConnector {
     var $table = $('#requestsTable')
     $("#requestsTable").on("click-row.bs.table", (async (row, $sel, field) => {
 
+      $('.datalist_progress').show()
       const hub_id_without_b = $('#hidden_hub_id').text()
 
       const reqId = $sel.id
@@ -257,7 +258,7 @@ class DataConnector {
       //render the data list
 
       //update title
-      $('#dataTitle').innerHTML = `Data List - Job ${text}` 
+      $('.card-title').innerHTML = `Data List - Job ${text}` 
 
       let dom_dataList = $('#dataList')
       dom_dataList.empty() 
@@ -275,24 +276,7 @@ class DataConnector {
         innerHTML += 
         `<li class="list-group-item d-flex justify-content-between align-items-center" data="${hub_id_without_b}|${jobId}|${d.name}">`
         +`<i class="fa fa-file pr-3" aria-hidden="true"></i>${d.name}`
-        + `<i class="fa fa-tachometer" aria-hidden="true"></i></li>`
-    
-
-
-        // oneItem = document.createElement('li')
-        // oneItem.classList.add('list-group-item')
-        // oneItem.href = `/dc/requests/download/${hub_id_without_b}/${jobId}/${d.name}`;
-        // oneItem.innerHTML = `${d.name}`
-        // oneItem.setAttribute('target', '_blank')
-
-        //let icon = document.createElement('i')
-        //icon.classList.add('fa')
-        //icon.classList.add('fa-check-circle')
-
-        //oneItem.append(icon)
-
-        //dom_dataList.append(oneItem);
-        
+        + `<i class="fa fa-download ml-auto pr-3" aria-hidden="true"></i></li>` 
       })
 
       dom_dataList.html(innerHTML)
@@ -302,9 +286,8 @@ class DataConnector {
       else
         dom_dataList.removeClass('dropdown-height')
 
-        //temp test:
-        //var onedata = 'issues_issues.csv'
-        //
+        $('.datalist_progress').hide()
+
 
         $('.list-group-item i').on('click', function() {
           
@@ -320,11 +303,11 @@ class DataConnector {
           else if($(this).hasClass('fa-tachometer')){
 
             (async (hubId,jobId,dataKey)=>{
-                const data = await this.getOneDataStream(hubId,jobId,dataKey)
+                $('.dashboard_progress').show() 
                 //send to dashboard 
                 global_DataDashboard.destoryAllViews()
-                global_DataDashboard.configData(dataKey,data) 
-
+                global_DataDashboard.configData(hubId,jobId,dataKey,data) 
+                $('.dashboard_progress').hide() 
             })(hubId,jobId,dataKey)
           }
           else{
