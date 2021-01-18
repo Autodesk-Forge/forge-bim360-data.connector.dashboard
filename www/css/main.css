@@ -145,15 +145,18 @@ body {
 
 
 .list-group{
-  max-height: 200px;
+  max-height: 50vh;
   margin-bottom: 10px;
   overflow:scroll;
   -webkit-overflow-scrolling: touch;
 }
 
+.table-striped tbody tr.highlight td 
+{ background-color:cyan }
+
+
 .table  {
-  display:block;
-  height: 500px;
+  height: 20vh;
   overflow-y: auto;
   text-align: center;
  }
@@ -192,3 +195,6 @@ body {
   height:60vh;
 }
  
+.list-group {
+
+}

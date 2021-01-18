@@ -15,7 +15,8 @@
             "env":{
                 "FORGE_CLIENT_ID":"lUNh5GqDoGwLXePNjAQOlvy78IBmylLB",
                 "FORGE_CLIENT_SECRET":"oGlRRQ7eUXdNaRWC",
-                "FORGE_CALLBACK_URL":"http://localhost:3000/oauth/callback"
+                "FORGE_CALLBACK_URL":"http://localhost:3000/oauth/callback",
+                "DC_CALLBACK_URL":"http://90bc3fa2f7f8.ngrok.io/dc/requests/callback"
             }
         }
     ]

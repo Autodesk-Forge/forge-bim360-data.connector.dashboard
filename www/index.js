@@ -27,8 +27,10 @@ $(document).ready(function () {
     }
   })()
 
+  //initialize the parameters of creating new request
   initDefaultParamsOfCreateReq()
-  global_DataConnector.initTable('requestsTable',false)
+  //initialize columns of request table view
+  global_DataConnector.initTable()
 
 });
 
@@ -42,11 +44,11 @@ function initDefaultParamsOfCreateReq(){
   const currentDate  = date.getFullYear() 
                       +'-' + (date.getMonth() +1)
                       + '-' +date.getDate();
-  $('#description').val(`Created by Dashboard App at ${currentDate}`)
- 
+  $('#description').val(`Created by Dashboard App at ${currentDate}`) 
 
 }
 
+//when one hub is selected
 function delegateHubSelection(){ 
   $(document).on('click', '#hubs_list a', function(e) {
     $('#hub_dropdown_title').html($(this).html());
@@ -54,10 +56,13 @@ function delegateHubSelection(){
     const hub_id_with_b = 'b.' + hub_id_without_b
     $('#hidden_hub_id').text(hub_id_without_b); 
 
-    global_DataConnector.refreshRequestsTable(hub_id_without_b,'requestsTable',false)
+    //refresh the table view of requests
+    global_DataConnector.extractRequests(hub_id_without_b)
   });
 }
 
+
+//create new request
 function delegateCreateRequestButton(){ 
   $(document).on('click', '#createReq', (async e=> {
 
@@ -81,11 +86,8 @@ function delegateCreateRequestButton(){
 
     const scheduleInterval = $('input:radio[name="schedule"]:checked')[0].id.toLocaleUpperCase()
     const reoccuringInterval = scheduleInterval=='one_time'?-1:Number($('#interval').val())
-
-
  
     let d = new Date($("#startDate").val()); 
-
     d.setUTCMinutes(d.getUTCMinutes()+10) // start first extration 10 minutes after creating request
 
     const startDate = d.getFullYear() 
@@ -113,12 +115,16 @@ function delegateCreateRequestButton(){
       serviceGroups:serviceGroups,
       effectiveFrom:startDate,
       effectiveTo:endDate,
-      callbackUrl:null //will add valid endpoint of callback on server side 
-    } 
 
-
+      //notified by Forge when one job is done
+      //will add valid endpoint of callback on server side
+      callbackUrl:null  
+    }  
+    //create new request
     await global_DataConnector.createRequest(hub_id_without_b,body)
-    global_DataConnector.refreshRequestsTable(hub_id_without_b,'requestsTable',false)
+    //refresh table view of requests
+    global_DataConnector.refreshRequestsTable(hub_id_without_b,
+                                              'requestsTable',false)
 
   }))
 }

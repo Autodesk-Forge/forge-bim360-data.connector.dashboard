@@ -29,18 +29,27 @@ const SocketEnum = {
     DC_TOPIC: 'dc topic',
     EXPORT_HUBS_DONE:'export hubs done',
     EXPORT_REQUESTS_DONE:'export requests done',
+    ONE_TIME_JOB_CREATED:'job of one_time type is available',
     CALLBACK_DONE: 'callback done',
     DC_ERROR:'dc errors'
   };  
-    
+
+
 
 module.exports = { 
     SocketEnum,
     clearFolder, 
     randomValueBase64,
     compressStream,
-    flatDeep 
+    flatDeep,
+    socketNotify
 }
+
+function socketNotify(topic,message,data){
+    //notify client
+    var sockketData = {message:message,data:data} 
+    global.MyApp.SocketIo.emit(topic, JSON.stringify(sockketData));
+  } 
 
 async function clearFolder(folder){
     return new Promise((resolve, reject) => {

@@ -31,8 +31,9 @@ const utility = require('../utility')
 
 const { OAuth } = require('../services/oauth')
 const dcServices = require('../services/data_connector');
-const { fstat } = require('fs');
 
+
+//verify valid authentication
 router.use(async (req, res, next) => {
 
   const oauth = new OAuth(req.session);
@@ -52,105 +53,128 @@ router.use(async (req, res, next) => {
 });
 
 
+
+async function extractRequests(hubId, allRequests) {
+  allRequests = await dcServices.getRequests(hubId, allRequests)
+  //get jobs and sort data
+  let promiseArr = allRequests.map(async (r, index) => {
+    const reqId = r.id
+    console.log(`sorting one request ${reqId}`);
+
+    if (r.description.includes('IQ Data Extraction')) {
+      r.description = 'Extraction by UI'
+    }
+    var allJobs = []
+    allJobs = await dcServices.getJobs(hubId, reqId, allJobs)
+    r.jobs = allJobs
+
+    //data list of first job, for the job list of table view in client
+    if (allJobs.length > 0) {
+      r.data = r.serviceGroups
+    }
+    else {
+      r.data = []
+    }
+
+    //complete date of first job,for the job list of table view in client
+    if (allJobs.length > 0) {
+      r.completedAt = allJobs[0].completedAt
+    }
+    else {
+      r.completedAt = null
+    }
+
+    //status of first job,for the job list of table view in client
+    if (allJobs.length > 0) {
+      r.status = allJobs[0].status
+    }
+    else {
+      r.status = null
+    }
+    return r
+  })
+
+  return Promise.all(promiseArr).then((resultsArray) => {
+    console.log(`Promise.all sorting out assets done`)
+    resultsArray = utility.flatDeep(resultsArray, Infinity)  
+    return resultsArray
+  }).catch(function (err) {
+    console.error(`exception when Promise.all sorting out requests: ${err}`)
+    return []
+  })
+}
+
+//get all requests
 router.get('/requests/:hubId', async (req, res, next) => {
 
+  const hubId = req.params['hubId']
+  //send status to client firstly
+  //Next, extract requests, finally notify client by socket when it is done
+  res.status(200).end()
+
   try {
-    const hubId = req.params['hubId']
-    //res.status(200).end()
-
+    //get all requests
     var allRequests = []
-    allRequests = await dcServices.getRequests(hubId, allRequests)
-    //get jobs
-    let promiseArr = allRequests.map(async (r, index) => {
-      const reqId = r.id
-      console.log(`sorting one request ${reqId}`);
-
-      if (r.description.includes('IQ Data Extraction')) {
-        r.description = 'Extraction by UI'
-      }
-      var allJobs = []
-      allJobs = await dcServices.getJobs(hubId, reqId, allJobs)
-      r.jobs = allJobs
-
-      //data list of first job
-      if (allJobs.length > 0) {
-        r.data = r.serviceGroups
-      }
-      else {
-        r.data = []
-      }
-
-      //complete date of first job
-      if (allJobs.length > 0) {
-        r.completedAt = allJobs[0].completedAt
-      }
-      else {
-        r.completedAt = null
-      }
-
-      //status of first job
-      if (allJobs.length > 0) {
-        r.status = allJobs[0].status
-      }
-      else {
-        r.status = null
-      }
-      return r
-    })
-
-    return Promise.all(promiseArr).then((resultsArray) => {
-      console.log(`Promise.all sorting out assets done`);
-      resultsArray = utility.flatDeep(resultsArray, Infinity)
-      res.json(resultsArray);
-    }).catch(function (err) {
-      console.error(`exception when Promise.all sorting out requests: ${err}`);
-      res.json([]);
-    })
-
-
-    // utility.socketNotify(utility.SocketEnum.DC_TOPIC,
-    //   utility.SocketEnum.EXPORT_REQUESTS_DONE,
-    //   allRequests) 
-
-    res.json(allRequests)
+    allRequests = await extractRequests(hubId,allRequests) 
+    
+    utility.socketNotify(utility.SocketEnum.DC_TOPIC,
+      utility.SocketEnum.EXPORT_REQUESTS_DONE,
+      allRequests)
 
   } catch (e) {
     // here goes out error handler
     console.log('get all requests failed: ' + e.message)
-    // utility.socketNotify(utility.SocketEnum.DC_TOPIC,
-    //   utility.SocketEnum.DC_ERROR, {error:e.message})
-    // }
-    res.status(500).end()
+    utility.socketNotify(utility.SocketEnum.ASSET_TOPIC,
+      utility.SocketEnum.DC_ERROR,
+      {error:e.message}) 
   }
 });
 
 //create new request
 router.post('/requests/:hubId', jsonParser, async (req, res, next) => {
 
+
+  const hubId = req.params['hubId']
+  let body = req.body
+  var createRes = null
   try {
-    const hubId = req.params['hubId']
-    let body = req.body
-    const createRes = await dcServices.postRequest(hubId, body)
+    createRes = await dcServices.postRequest(hubId, body)
     if (createRes) {
       res.end()
     } else {
       res.status(500).end()
     }
-
   } catch (e) {
     // here goes out error handler
     console.log('create request failed: ' + e.message)
     res.status(500).end()
   }
+
+  if (createRes) {
+
+
+    //if ONE_TIME request, it may take a few minutes to have job list with request
+    //send notification to client firstly and use socket to notify when one job is available 
+
+    // as to other type of request（Day/Week/Month/Year), depending on the date of executeFrom. 
+    // so better leave '/requests/callback' to nortify client when a job is done..
+
+    //start to polling the job list, normally within 5 minutes
+    //timeout if more than 5 minutes, then the client has to refresh manually
+    //at client side.
+    var allJobs = []
+    while (allJobs.length == 0)
+      allJobs = await dcServices.getJobs(hubId, reqId, allJobs)
+
+  }
+
 });
 
+//callback when one job is done
 router.post('/requests/callback', async (req, res, next) => {
-  //one job is done....
-  res.end() //notify Forge this callback is triggered
 
-  console.log('request callback is triggered!')
-
-
+  res.end() //notify Forge this callback is triggered 
+  console.log(`request callback is triggered: Request Id: ${req.body.request_id}, Job Id: ${req.body.job_id}`)
 })
 
 router.get('/requests/:hubId/:reqId', async (req, res, next) => {

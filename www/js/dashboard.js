@@ -1,29 +1,31 @@
+/////////////////////////////////////////////////////////////////////
+// Copyright (c) Autodesk, Inc. All rights reserved
+// Written by Forge Partner Development
+//
+// Permission to use, copy, modify, and distribute this software in
+// object code form for any purpose and without fee is hereby granted,
+// provided that the above copyright notice appears in all copies and
+// that both that copyright notice and the limited warranty and
+// restricted rights notice below appear in all supporting
+// documentation.
+//
+// AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+// AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+// MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+// DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+// UNINTERRUPTED OR ERROR FREE.
+/////////////////////////////////////////////////////////////////////
+
 class DataDashboard {
 
-  constructor() {
-
-    this._data = {
-      stat_left: [],
-      stat_right: [] 
-    }
-    this._view = {
-      stat_left_view:null,
-      stat_right_view:null 
-    }
+  constructor() { 
     this._dashboardDefs =[
       'issues_issues.csv',
       'admin_users.csv',
       'checklists_checklists.csv'
     ]
   }
-
-   destoryAllViews(){
-    if(this._view.stat_left_view)
-      this._view.stat_left_view.destroy();
-    if(this._view.stat_right_view)
-      this._view.stat_right_view.destroy();
-  } 
-
+ 
   async getRenderHTML(html) {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -36,7 +38,8 @@ class DataDashboard {
      }) 
   })}
 
-  renderDashboard(labels,dataTotals,colors,title,chartType,dom){
+  //fix 3 types of dashboards, change with your requirements
+  renderDashboard(labels,dataTotals,colors,title,chartType,legend_display,dom){
     var chartData = {
       datasets: [{
         data: dataTotals,
@@ -61,7 +64,7 @@ class DataDashboard {
           intersect: true
         },
         legend: {
-          display: true
+          display: legend_display
         },
         plugins: {
           datalabels: {
@@ -78,6 +81,8 @@ class DataDashboard {
     new Chart(ctx, config);
   }
 
+  //only demo making dashboards with issue data
+  //add more dashboards for other types of data with your requirements
   async configData(hubId,jobId,dataKey){
 
     const data = await global_DataConnector.getOneDataStream(hubId,jobId,dataKey)
@@ -120,23 +125,22 @@ class DataDashboard {
            && x.status != 'close')
         //find issues due in this week
         const weekDueStart = new Date()
-        var dateAtOneWeek = weekDueStart; 
+        var dateAtOneWeek = new Date(); 
         dateAtOneWeek.setDate(weekDueStart.getDate() + 7);
-        dateAtOneWeek = dateAtOneWeek.getTime();
 
         var due_thisWeek_Issues = one_project_issues.filter(
           x=>x.due_date!=null 
           && x.due_date!=undefined
           && x.due_date!=''
-          && new Date(x.due_date).getTime() > currentTime && new Date(x.due_date).getTime() < dateAtOneWeek
-          && x.status != 'close') 
-
+          && new Date(x.due_date).getTime() > weekDueStart.getTime() && new Date(x.due_date).getTime() < dateAtOneWeek.getTime()
+          && x.status != 'close')  
+      
          issues.push({
            project_id:bim360_project_id,
            project_name:p.name,
            project_issues_count:one_project_issues.length,
            overdue_issues_count:overDue_OpenIssues.length,
-           due_thisWeek_issues_count:due_thisWeek_Issues,
+           due_thisWeek_issues_count:due_thisWeek_Issues.length,
            issue_types:[]
         })                     
       }) 
@@ -156,7 +160,13 @@ class DataDashboard {
         colors.push(this.random_rgba())
       }
 
-      this.renderDashboard(labels,dataTotals,colors,'Issues by Projects','horizontalBar','issueByProjects')
+      this.renderDashboard(labels,
+                            dataTotals,
+                            colors,
+                            'Issue Count of Top 10 Projects',
+                            'horizontalBar',
+                            false,
+                            'issueByProjects')
   
     
       //overdue issues by projects top 5
@@ -176,7 +186,13 @@ class DataDashboard {
         colors.push(this.random_rgba())
       } 
 
-      this.renderDashboard(labels,dataTotals,colors,'Top 5 Projects withOverdue Issues','pie','topOverdue')
+      this.renderDashboard(labels,
+                            dataTotals,
+                            colors,
+                            'Overdue Issues of Top 5 Projects ',
+                            'pie',
+                            true,
+                            'topOverdue')
 
 
       //due this week  by projects top 10
@@ -197,133 +213,27 @@ class DataDashboard {
         colors.push(this.random_rgba())
       } 
 
-      this.renderDashboard(labels,dataTotals,colors,'Top 10 Projects Due Issues This Week','horizontalBar','overdueThisWeek')
+      this.renderDashboard(labels,
+                            dataTotals,
+                            colors,
+                            'Due Issues This Week of Top 10 Projects ',
+                            'horizontalBar',
+                            false,
+                            'overdueThisWeek')
 
 
     }else if(dataKey == 'admin_users.csv'){
 
+      //if you want to extend with more dashboards...
+      //prepare the HTML page like issue_dashboard.html
+
     }else if(dataKey == 'checklists_checklists.csv'){
-
+        //if you want to extend with more dashboards... 
+        //prepare the HTML page like issue_dashboard.html 
     }
+    //else if....
 
-  }
-  refresh_stat_left(userData,config) {
-
-     var labels = [], data_map = {}, dataTotals = [], colors = [];
- 
-    userData.forEach(async u => {
-      if (u[config.property] in data_map)
-        data_map[u[config.property]]++
-      else
-        data_map[u[config.property]] = 1
-    }); 
-
-    for (var d in data_map) {
-      labels.push(d);
-      dataTotals.push(data_map[d]);
-      colors.push(this.random_rgba())
-    }
-
-    var chartData = {
-      datasets: [{
-        data: dataTotals,
-        backgroundColor: colors
-      }],
-      labels: labels
-    };
-
-    var config = {
-      type: config.type,
-      data: chartData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-
-        title: {
-          display: true,
-          text: config.title
-        },
-        tooltips: {
-          mode: 'index',
-          intersect: true
-        },
-        legend: {
-          display: true
-        },
-        plugins: {
-          datalabels: {
-            display: true,
-            align: 'center',
-            anchor: 'center'
-          }
-        }
-      }
-    }
-
-    var canvas = document.getElementById('stat_one');
-    var ctx = canvas.getContext('2d');
-    this._view.stat_one_view = new Chart(ctx, config);
-    this._view.stat_one_view.update();
-  }
-
-  refresh_stat_right(userData, config) {
-
-    var labels = [], data_map = {}, dataTotals = [], colors = [];
-
-    userData.forEach(async u => {
-      if (u[config.property] in data_map)
-        data_map[u[config.property]]++
-      else
-        data_map[u[config.property]] = 1
-    }); 
-    for (var d in data_map) {
-      labels.push(d);
-      dataTotals.push(data_map[d]);
-      colors.push(this.random_rgba())
-    }
-
-    var chartData = {
-      datasets: [{
-        data: dataTotals,
-        backgroundColor: colors
-      }],
-      labels: labels
-    };
-
-    var config = {
-      type: config.type,
-      data: chartData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-
-        title: {
-          display: true,
-          text: config.title
-        },
-        tooltips: {
-          mode: 'index',
-          intersect: true
-        },
-        legend: {
-          display: true
-        },
-        plugins: {
-          datalabels: {
-            display: true,
-            align: 'center',
-            anchor: 'center'
-          }
-        }
-      }
-    }
-
-    var canvas = document.getElementById('stat_two');
-    var ctx = canvas.getContext('2d');
-    this._view.stat_two_view = new Chart(ctx, config);
-    this._view.stat_two_view.update();
-  }
-
+  } 
   random_rgba() {
     var o = Math.round, r = Math.random, s = 255;
     return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + 0.5 + ')';

@@ -28,21 +28,15 @@
 
 <!-- Chart.js for dashboard -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.0/dist/Chart.min.js"></script>
-<script src="https://chartjs-plugin-datalabels.netlify.com/chartjs-plugin-datalabels.js"></script>
 <script src="https://chartjs-plugin-datalabels.netlify.com/samples/utils.js"></script>
 
 <script src="./js/nav.help.js"></script>
-<script src="./js/utility.js"></script>
 
 <script src="./js/oauth.js"></script>
 <script src="./js/data_management.js"></script>
 <script src="./js/data_connector.js"></script>
-
-
-<script src="./js/dc.dashboard.js"></script>
-<script src="./js/dc.request.create.js"></script>
-<script src="./js/dc.requests.view.js"></script>
 <script src="./js/dashboard.js"></script>
+<script src="./js/socket_modules.js"></script>
 
 
 <script src="./libs/jquery.csv.min.js"></script>
@@ -99,7 +93,7 @@
   <div class="container-fluid fill">
 
     <div class="row">
-      <div id="newrequest" class="col-4" style="height: 28vh;border:1px solid silver; border-radius:10px; ">
+      <div id="newrequest" class="col-4" style="height: 28vh; border:1px solid silver; border-radius:10px; ">
         <div class="row">
           </br>
         </div>
@@ -113,12 +107,13 @@
           </div>
         </div>
         <div class="row">
-          <div class="input-group mb-3">
+          <div>
+            <label>
+              <bold>Services</bold>
+            </label>
+          </div>
+          <div class="input-group mb-2">
             <div class="input-group-prepend">
-              <label>
-                <bold>Services</bold>
-              </label>
-              </br>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="srvAdmin" checked>
                 <label class="form-check-label">
@@ -180,11 +175,13 @@
         </div>
 
         <div class="row">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <label>Schedule</label>
+          <div class="input-group mb-2">
+            <div>
+              <label>
+                <bold>Schedule</bold>
+              </label>
             </div>
-            </br>
+            &nbsp
             <div class="form-check">
               <input class="form-check-input" type="radio" name="schedule" id="one_time" value="option1" checked>
               <label class="form-check-label">
@@ -232,7 +229,7 @@
             <div class="input-group datetimepicker ">
               <span class="input-group-addon">Effective From</span>&nbsp
               <input class="set-due-date form-control" data-provide="datepicker" id="startDate" />
-              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+              &nbsp&nbsp&nbsp<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
             </div>
           </div>
           <div class="col-6">
@@ -240,7 +237,7 @@
             <div class="input-group datetimepicker">
               <span class="input-group-addon">Effective To</span>&nbsp
               <input class="set-due-date form-control" data-provide="datepicker" id="endDate" />
-              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+              &nbsp&nbsp&nbsp<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
             </div>
           </div>
         </div>
@@ -257,14 +254,18 @@
         </div>
       </div>
       <div id="requests" class="col-8" style="height: 28vh;border:1px solid silver; border-radius:10px; overflow:auto">
-        <table class="table table-sm table-striped table-bordered table-hover" id="requestsTable">
-          <div class="req_progress" hidden>
-            <div style="text-align: center;">
-              <img src="./img/Bars-1s-10px.svg" class="InProgressImg">
+        <row>
+          <h5 class="card-title" style="text-align: center;">Current Extraction Requests</h5>
+        </row>
+        <row>
+          <table class="table table-sm table-striped  table-hover" id="requestsTable">
+            <div class="req_progress" style="display:none">
+              <div style="text-align: center;">
+                <img src="./img/Bars-1s-10px.svg" class="InProgressImg">
+              </div>
             </div>
-          </div>
-        </table>
-
+          </table>
+        </row>
       </div>
 
     </div>
@@ -273,21 +274,19 @@
       <div class="col" style="height: 60vh;border:1px solid silver;border-radius:10px; ">
         <div class="row">
           <div class="col-4" style="height: 60vh;border:1px solid silver;border-radius:10px; ">
-            <h5 class="card-title" style="text-align: center;">Data List</h5>
-            <div class="datalist_progress" hidden>
+            <h5 class="card-title" id="dataListTitle" style="text-align: center;">Data List</h5>
+            <div class="datalist_progress" style="display:none">
               <div style="text-align: center;">
                 <img src="./img/Bars-1s-200px.svg" class="InProgressImg_table">
               </div>
             </div>
-            <div class="list-group" id="dataList" style="text-align: left;">
+            <div class="list-group dropdown-height" id="dataList" style="text-align: left;">
             </div>
-          </div>
+          </div> 
 
-          <div id="dashboard" class="col-8" style="height: 60vh;">
-            <div class="dashboard_progress" hidden>
-              <div style="text-align: center;">
-                <img src="./img/Bars-1s-200px.svg" class="InProgressImg_table">
-              </div>
+          <div class="col-8" style="height: 60vh;"> 
+            <div id="dashboard">
+
             </div>
           </div>
         </div>

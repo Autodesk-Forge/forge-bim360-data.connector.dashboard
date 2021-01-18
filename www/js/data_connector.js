@@ -1,33 +1,46 @@
+/////////////////////////////////////////////////////////////////////
+// Copyright (c) Autodesk, Inc. All rights reserved
+// Written by Forge Partner Development
+//
+// Permission to use, copy, modify, and distribute this software in
+// object code form for any purpose and without fee is hereby granted,
+// provided that the above copyright notice appears in all copies and
+// that both that copyright notice and the limited warranty and
+// restricted rights notice below appear in all supporting
+// documentation.
+//
+// AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
+// AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
+// MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
+// DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
+// UNINTERRUPTED OR ERROR FREE.
+/////////////////////////////////////////////////////////////////////
+
 class DataConnector {
 
   constructor() {
 
-    this._dcTable = null
     this._pageLimit = 25
     this._pageOffset = 0
     this._data = {
       requestsTable: []
     }
-
+    //columns definitions of table
     this._tableFixComlumns = {
       parent: this,
       requestsTable: function (isRaw) {
         return [
           { field: 'description', title: "description", align: 'left' },
-
           { field: 'scheduleInterval', title: "schedule", align: 'center' },
           { field: 'reoccuringInterval', title: "interval", align: 'center' },
           { field: 'createdAt', title: "created time", align: 'center' },
           { field: 'effectiveTo', title: "effective to", align: 'center' },
-
           { field: 'jobs', title: "jobs", align: 'center', formatter: this.parent.droplistFormatter },
           { field: 'completedAt', title: "job completedAt", align: 'left' },
           { field: 'status', title: "job status", align: 'center' },
           { field: 'serviceGroups', title: "service groups", align: 'center', formatter: this.parent.dataFormatter },
           { field: 'createdByEmail', title: "createdByEmail", align: 'center' },
           { field: 'isActive', title: "isActive", align: 'center' }
-
-
         ]
       }
     }
@@ -40,103 +53,87 @@ class DataConnector {
     value.forEach(async element => {
       var $option = $("<option></option>", {
         "text": `startedAt:${element.startedAt}`,
-        "value": `${element.id}|${index}`
+        "value": `${element.id}|${index}` //store job id and index
       });
       $select.append($option);
     });
     return $select.prop("outerHTML");
   }
 
+  //formatter for service groups
   dataFormatter(value, row, index) {
 
     //when initialization, set data list to the data of first job
-    //var jobData = JSON.parse(value);
-
-    // var $select = $(`<select></select>`, {
-    // });
-    // jobData.forEach(async element => {
-    //   var $option = $("<option></option>", {
-    //       "text": `${element.name}`,
-    //       "value": element.key
-    //   }); 
-    //   $select.append($option);
-    // });
-    // return $select.prop("outerHTML"); 
     var re = ``
     value.forEach(async element => {
       re += `<a href="${element}" data=${element}>${element}</a>&nbsp|&nbsp`;
     });
-
     return re
   }
 
-  async refreshRequestsTable(hubId, domId, isRaw = false) {
+  async extractRequests(hubId){
     try {
-      $('.clsInProgress').show();
-      const requests = await this.getRequests(hubId)
-      this._data[domId] = requests
-      //refresh table
+      $('.req_progress').show();
+      await this.getRequests(hubId)
+      //It may take time to have all requests, 
+      //so wait for the result at socket_modules.js
 
-      $(`#${domId}`).bootstrapTable('destroy');
+      ///.....do nothing....
 
-      const fixCols = this._tableFixComlumns[domId](isRaw)
+    }catch (e) {
+      $('.req_progress').hide();
+    }
+  }
 
-      $(`#${domId}`).bootstrapTable({
-        data: requests,
+  refreshRequestsTable(data) {
+     
+      //refresh table 
+      $(`#requestsTable`).bootstrapTable('destroy');
+      const fixCols = this._tableFixComlumns['requestsTable']()
+
+      $(`#requestsTable`).bootstrapTable({
+        data: data,
         editable: false,
         clickToSelect: true,
         cache: false,
         showToggle: false,
-        showPaginationSwitch: true,
+        showPaginationSwitch: false,
         pagination: true,
         pageList: [5, 10, 25, 50, 100],
         pageSize: 5,
         pageNumber: 1,
         uniqueId: 'id',
         striped: true,
-        search: true,
-        showRefresh: true,
+        search: false,
+        showRefresh: false,
         minimumCountColumns: 2,
         smartDisplay: true,
-        columns: fixCols,
-        sortName: 'createdAt'
-        // onPageChange: async ( number, size)=> {
-        //   await this.parent.getAssets(accountId_without_b,projectId_without_b,projectName,size,number*size*2)
-
-        // }
-      });
-
-      //delegate event of switch one job
+        clickToSelect: true,
+        columns: fixCols 
+      }); 
+      //delegate events: select one job, select one request
       this.delegateJobsEvents()
-
-      $('.clsInProgress').hide();
-
-    } catch (e) {
-      $('.clsInProgress').hide();
-
-    }
   }
 
-  initTable(domId, isRaw) {
-    $(`#${domId}`).bootstrapTable('destroy');
-    const columns = this._tableFixComlumns[domId](isRaw)
-    $(`#${domId}`).bootstrapTable({
+  initTable() {
+    $(`#requestsTable`).bootstrapTable('destroy');
+    const columns = this._tableFixComlumns['requestsTable']()
+    $(`#requestsTable`).bootstrapTable({
       parent: this,
       data: [],
-      title: domId,
       editable: false,
       clickToSelect: true,
       cache: false,
       showToggle: false,
-      showPaginationSwitch: true,
+      showRefresh: false,
+      showPaginationSwitch: false,
       pagination: true,
       pageList: [5, 10, 25, 50, 100],
       pageSize: 10,
       pageNumber: 1,
       uniqueId: 'id',
       striped: true,
-      search: true,
-      showRefresh: true,
+      search: false,
       minimumCountColumns: 2,
       smartDisplay: true,
       columns: columns
@@ -174,7 +171,7 @@ class DataConnector {
     })
   }
 
-  async getOneDataStream(hubId, jobId,dataKey) {
+  async getOneDataStream(hubId, jobId, dataKey) {
     return new Promise((resolve, reject) => {
       $.ajax({
         url: `/dc/requests/dataStream/${hubId}/${jobId}/${dataKey}`,
@@ -210,6 +207,10 @@ class DataConnector {
   }
 
   delegateJobsEvents() {
+
+    $('#requestsTable').on('click', 'tbody tr', function (event) {
+      $(this).addClass('highlight').siblings().removeClass('highlight');
+    })
     $(document).on('change', 'select', function (e) {
       const selectedIndex = $(this)[0].selectedIndex
       const reqId = $(this)[0].id
@@ -240,7 +241,6 @@ class DataConnector {
       })
     })
 
-    var $table = $('#requestsTable')
     $("#requestsTable").on("click-row.bs.table", (async (row, $sel, field) => {
 
       $('.datalist_progress').show()
@@ -258,25 +258,25 @@ class DataConnector {
       //render the data list
 
       //update title
-      $('.card-title').innerHTML = `Data List - Job ${text}` 
+      $('#dataListTitle')[0].innerHTML = `Data List - Job ${text}`
 
       let dom_dataList = $('#dataList')
-      dom_dataList.empty() 
-     
+      dom_dataList.empty()
+
       let innerHTML = ''
       dataList.forEach(async d => {
 
-        
-        global_DataDashboard._dashboardDefs.includes(d.name)?
-        innerHTML += 
-        `<li class="list-group-item d-flex justify-content-between align-items-center" data="${hub_id_without_b}|${jobId}|${d.name}">`
-        +`<i class="fa fa-file pr-3" aria-hidden="true"></i>${d.name}`
-        + `<i class="fa fa-download ml-auto pr-3" aria-hidden="true"></i>`
-        + `<i class="fa fa-tachometer" aria-hidden="true"></i></li>` :
-        innerHTML += 
-        `<li class="list-group-item d-flex justify-content-between align-items-center" data="${hub_id_without_b}|${jobId}|${d.name}">`
-        +`<i class="fa fa-file pr-3" aria-hidden="true"></i>${d.name}`
-        + `<i class="fa fa-download ml-auto pr-3" aria-hidden="true"></i></li>` 
+
+        global_DataDashboard._dashboardDefs.includes(d.name) ?
+          innerHTML +=
+          `<li class="list-group-item d-flex justify-content-between align-items-center" data="${hub_id_without_b}|${jobId}|${d.name}">`
+          + `<i class="fa fa-file pr-3" aria-hidden="true"></i>${d.name}`
+          + `<i class="fa fa-download ml-auto pr-3" aria-hidden="true"></i>`
+          + `<i class="fa fa-tachometer" aria-hidden="true"></i></li>` :
+          innerHTML +=
+          `<li class="list-group-item d-flex justify-content-between align-items-center" data="${hub_id_without_b}|${jobId}|${d.name}">`
+          + `<i class="fa fa-file pr-3" aria-hidden="true"></i>${d.name}`
+          + `<i class="fa fa-download ml-auto pr-3" aria-hidden="true"></i></li>`
       })
 
       dom_dataList.html(innerHTML)
@@ -286,34 +286,33 @@ class DataConnector {
       else
         dom_dataList.removeClass('dropdown-height')
 
-        $('.datalist_progress').hide()
+      $('.datalist_progress').hide()
 
 
-        $('.list-group-item i').on('click', function() {
-          
-          const data = $(this).closest('.list-group-item').attr('data')
-          const hubId = data.split('|')[0]
-          const jobId = data.split('|')[1]
-          const dataKey = data.split('|')[2]
+      $('.list-group-item i').on('click', function () {
 
-          if($(this).hasClass('fa-download')){
-            window.location  = `/dc/requests/download/${hubId}/${jobId}/${dataKey}`
+        const data = $(this).closest('.list-group-item').attr('data')
+        const hubId = data.split('|')[0]
+        const jobId = data.split('|')[1]
+        const dataKey = data.split('|')[2]
 
-          } 
-          else if($(this).hasClass('fa-tachometer')){
+        if ($(this).hasClass('fa-download')) {
+          window.location = `/dc/requests/download/${hubId}/${jobId}/${dataKey}`
 
-            (async (hubId,jobId,dataKey)=>{
-                $('.dashboard_progress').show() 
-                //send to dashboard 
-                global_DataDashboard.destoryAllViews()
-                global_DataDashboard.configData(hubId,jobId,dataKey,data) 
-                $('.dashboard_progress').hide() 
-            })(hubId,jobId,dataKey)
-          }
-          else{
-            //do nothing
-          } 
-        })
+        }
+        else if ($(this).hasClass('fa-tachometer')) {
+
+          (async (hubId, jobId, dataKey) => {
+            $('.dashboard_progress').show()
+            //send to dashboard 
+            await global_DataDashboard.configData(hubId, jobId, dataKey, data)
+            $('.dashboard_progress').hide()
+          })(hubId, jobId, dataKey)
+        }
+        else {
+          //do nothing
+        }
+      })
 
     }));
 

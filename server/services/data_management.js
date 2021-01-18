@@ -26,7 +26,7 @@ module.exports = {
   getUserProfile 
 }
 
-async function getHubs(allHubs,limit = 10, number = 0) {
+async function getHubs(allHubs,limit =100, number = 0) {
 
   try {
     const endpoint = config.endpoints.bim360DM.get_hubs + `?page[limit]=${limit}&page[number]=${number}`

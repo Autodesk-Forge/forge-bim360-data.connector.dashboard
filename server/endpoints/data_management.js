@@ -44,6 +44,8 @@ router.use(async (req, res, next) => {
 
 router.get('/getHubs', async (req, res, next) => { 
   try {   
+
+    //Generally, not many hubs, so it is fine to extract hubs and notify client
     var allHubs = []
     allHubs = await dmServices.getHubs(allHubs)  
 
