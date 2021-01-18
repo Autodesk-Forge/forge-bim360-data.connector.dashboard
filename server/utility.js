@@ -42,8 +42,17 @@ module.exports = {
     randomValueBase64,
     compressStream,
     flatDeep,
-    socketNotify
+    socketNotify,
+    checkTimeout,
+    delay
 }
+
+//to avoid the problem of 429 (too many requests in a time frame)
+async function delay(t, v) {
+    return new Promise(function(resolve) {
+      setTimeout(resolve.bind(null, v), t);
+    });
+  }
 
 function socketNotify(topic,message,data){
     //notify client
@@ -80,9 +89,14 @@ function flatDeep(arr, d = 1) {
                  : arr.slice();
 };
 
+function  checkTimeout(st,end){
+    return end - st  < 5 * 60 * 1000  // 5 minutes
+  }
+
 String.prototype.format =function () {
     var args = arguments;
     return this.replace(/\{(\d+)\}/g, function(m, i){
         return args[i];
     });
 };
+

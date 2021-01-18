@@ -73,6 +73,8 @@ class DataConnector {
 
   async extractRequests(hubId){
     try {
+      global_DataConnector._data['requestsTable'] = null
+      this.initTable()
       $('.req_progress').show();
       await this.getRequests(hubId)
       //It may take time to have all requests, 
@@ -243,26 +245,34 @@ class DataConnector {
 
     $("#requestsTable").on("click-row.bs.table", (async (row, $sel, field) => {
 
-      $('.datalist_progress').show()
       const hub_id_without_b = $('#hidden_hub_id').text()
 
       const reqId = $sel.id
       const indexId = $(`#${reqId} option:selected`).index()
+      if(indexId == null || indexId == undefined || indexId <0){
+        alert('no job with this request, wait some time until the jobs list is available and try again')
+        return 
+      }
       const text = $(`#${reqId} option`)[indexId].text
       const value = $(`#${reqId} option`)[indexId].value
       const jobId = value.split('|')[0]
       const rowIndex = value.split('|')[1]
 
+      $('.datalist_progress').show() 
       const dataList = await this.getOneJobDatalist(hub_id_without_b, jobId)
+      $('.datalist_progress').hide()
 
-      //render the data list
-
+      //render the data list 
       //update title
       $('#dataListTitle')[0].innerHTML = `Data List - Job ${text}`
 
       let dom_dataList = $('#dataList')
       dom_dataList.empty()
 
+      if(dataList==null || dataList.length == 0){
+        alert('the job has not completed or has failed, try other job!')
+        return
+      }
       let innerHTML = ''
       dataList.forEach(async d => {
 
@@ -286,7 +296,6 @@ class DataConnector {
       else
         dom_dataList.removeClass('dropdown-height')
 
-      $('.datalist_progress').hide()
 
 
       $('.list-group-item i').on('click', function () {

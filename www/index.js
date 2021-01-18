@@ -1,7 +1,7 @@
 const global_oAuth = new oAuth()
 const global_DataManagement = new DataManagement()
 const global_DataConnector = new DataConnector()
-const global_DataDashboard= new DataDashboard()
+const global_DataDashboard = new DataDashboard()
 
 $(document).ready(function () {
 
@@ -20,9 +20,9 @@ $(document).ready(function () {
 
       global_DataManagement.refreshHubs()
 
-       //delegate the event when one hub is selected
-       delegateHubSelection()
-       delegateCreateRequestButton()
+      //delegate the event when one hub is selected
+      delegateHubSelection()
+      delegateCreateRequestButton()
 
     }
   })()
@@ -34,27 +34,27 @@ $(document).ready(function () {
 
 });
 
-function initDefaultParamsOfCreateReq(){
+function initDefaultParamsOfCreateReq() {
   //description
-  let date = new Date(); 
+  let date = new Date();
 
   $("#startDate").datepicker("setDate", date);
   $("#endDate").datepicker("setDate", date);
 
-  const currentDate  = date.getFullYear() 
-                      +'-' + (date.getMonth() +1)
-                      + '-' +date.getDate();
-  $('#description').val(`Created by Dashboard App at ${currentDate}`) 
+  const currentDate = date.getFullYear()
+    + '-' + (date.getMonth() + 1)
+    + '-' + date.getDate();
+  $('#description').val(`Created by Dashboard App at ${currentDate}`)
 
 }
 
 //when one hub is selected
-function delegateHubSelection(){ 
-  $(document).on('click', '#hubs_list a', function(e) {
+function delegateHubSelection() {
+  $(document).on('click', '#hubs_list a', function (e) {
     $('#hub_dropdown_title').html($(this).html());
     const hub_id_without_b = $(this).attr('id')
     const hub_id_with_b = 'b.' + hub_id_without_b
-    $('#hidden_hub_id').text(hub_id_without_b); 
+    $('#hidden_hub_id').text(hub_id_without_b);
 
     //refresh the table view of requests
     global_DataConnector.extractRequests(hub_id_without_b)
@@ -63,10 +63,10 @@ function delegateHubSelection(){
 
 
 //create new request
-function delegateCreateRequestButton(){ 
-  $(document).on('click', '#createReq', (async e=> {
+function delegateCreateRequestButton() {
+  $(document).on('click', '#createReq', (async e => {
 
-    if($('#hidden_hub_id').text() == ''){
+    if ($('#hidden_hub_id').text() == '') {
       alert('please select one BIM account!');
       return;
     }
@@ -75,56 +75,90 @@ function delegateCreateRequestButton(){
 
     const description = $('#description').val()
     const serviceGroups = []
-    $('#srvAdmin').is(':checked')?serviceGroups.push('admin'):{}
-    $('#srvIssue').is(':checked')?serviceGroups.push('issues'):{}
-    $('#srvRfi').is(':checked')?serviceGroups.push('rfis'):{}
-    $('#srvChecklist').is(':checked')?serviceGroups.push('checklists'):{}
-    $('#srvCost').is(':checked')?serviceGroups.push('cost'):{}
-    $('#srvDailylog').is(':checked')?serviceGroups.push('dailylogs'):{}
-    $('#srvLocation').is(':checked')?serviceGroups.push('locations'):{}
-    $('#srvSubmittal').is(':checked')?serviceGroups.push('submittals'):{}
+    $('#srvAdmin').is(':checked') ? serviceGroups.push('admin') : {}
+    $('#srvIssue').is(':checked') ? serviceGroups.push('issues') : {}
+    $('#srvRfi').is(':checked') ? serviceGroups.push('rfis') : {}
+    $('#srvChecklist').is(':checked') ? serviceGroups.push('checklists') : {}
+    $('#srvCost').is(':checked') ? serviceGroups.push('cost') : {}
+    $('#srvDailylog').is(':checked') ? serviceGroups.push('dailylogs') : {}
+    $('#srvLocation').is(':checked') ? serviceGroups.push('locations') : {}
+    $('#srvSubmittal').is(':checked') ? serviceGroups.push('submittals') : {}
 
     const scheduleInterval = $('input:radio[name="schedule"]:checked')[0].id.toLocaleUpperCase()
-    const reoccuringInterval = scheduleInterval=='one_time'?-1:Number($('#interval').val())
- 
-    let d = new Date($("#startDate").val()); 
-    d.setUTCMinutes(d.getUTCMinutes()+10) // start first extration 10 minutes after creating request
+    const reoccuringInterval = scheduleInterval == 'one_time' ? -1 : Number($('#interval').val())
 
-    const startDate = d.getFullYear() 
-                      +"-" + (("0" + (d.getUTCMonth()+1)).slice(-2) )
-                      + "-" +  ("0" + d.getUTCDate()).slice(-2) 
-                      + "T" +("0" + d.getUTCHours()).slice(-2) 
-                      + ":" + ("0" + d.getUTCMinutes()).slice(-2) 
-                      + ":" + ("0" + d.getUTCSeconds()).slice(-2) 
-                      + ".000Z"
+
+    var startDate, endDate
+
+    let d = new Date($("#startDate").val());
+    // start first extration 1 minute after creating request
+    d.setUTCMinutes(d.getUTCMinutes() + 10) 
       
-    d = new Date($("#endDate").val()); 
-    const endDate =  d.getFullYear() 
-                    +"-" + (("0" + (d.getUTCMonth()+1)).slice(-2) )
-                    + "-" +  ("0" + d.getUTCDate()).slice(-2) 
-                    + "T" +("0" + d.getUTCHours()).slice(-2) 
-                    + ":" + ("0" + d.getUTCMinutes()).slice(-2) 
-                    + ":" + ("0" + d.getUTCSeconds()).slice(-2) 
-                    + ".000Z"
-    
-    let body = {
-      description:description,
-      isActive:true,
-      scheduleInterval:scheduleInterval,
-      reoccuringInterval:reoccuringInterval,
-      serviceGroups:serviceGroups,
-      effectiveFrom:startDate,
-      effectiveTo:endDate,
 
+      startDate = d.getFullYear()
+        + "-" + (("0" + (d.getUTCMonth() + 1)).slice(-2))
+        + "-" + ("0" + d.getUTCDate()).slice(-2)
+        + "T" + ("0" + d.getUTCHours()).slice(-2)
+        + ":" + ("0" + d.getUTCMinutes()).slice(-2)
+        + ":" + ("0" + d.getUTCSeconds()).slice(-2)
+        + ".000Z"
+
+    if (scheduleInterval == 'ONE_TIME') {
+      //ignore end date  
+    } else {
+      
+
+      d = new Date($("#endDate").val());
+      if (d.getUTCDate() == startDate.getUTCDate()) {
+        //ensure the end date is future of start date
+        alert('start and end date is same date! ')
+        return
+      }
+      endDate = d.getFullYear()
+        + "-" + (("0" + (d.getUTCMonth() + 1)).slice(-2))
+        + "-" + ("0" + d.getUTCDate()).slice(-2)
+        + "T" + ("0" + d.getUTCHours()).slice(-2)
+        + ":" + ("0" + d.getUTCMinutes()).slice(-2)
+        + ":" + ("0" + d.getUTCSeconds()).slice(-2)
+        + ".000Z"
+
+    }
+
+    let body = scheduleInterval == 'ONE_TIME' ? {
+      description: description,
+      isActive: true,
+      scheduleInterval: scheduleInterval,
+      serviceGroups: serviceGroups,
+      effectiveFrom: startDate,
       //notified by Forge when one job is done
       //will add valid endpoint of callback on server side
-      callbackUrl:null  
-    }  
+      callbackUrl: null
+    } :
+      {
+        description: description,
+        isActive: true,
+        scheduleInterval: scheduleInterval,
+        reoccuringInterval: reoccuringInterval,
+        serviceGroups: serviceGroups,
+        effectiveFrom: startDate,
+        effectiveTo: endtDate,
+        //notified by Forge when one job is done
+        //will add valid endpoint of callback on server side
+        callbackUrl: null
+      }
     //create new request
-    await global_DataConnector.createRequest(hub_id_without_b,body)
-    //refresh table view of requests
-    global_DataConnector.refreshRequestsTable(hub_id_without_b,
-                                              'requestsTable',false)
+    const newReqRes = await global_DataConnector.createRequest(hub_id_without_b, body)
+
+    if (newReqRes) {
+      if (global_DataConnector._data['requestsTable'] == null)
+        global_DataConnector.extractRequests(hub_id_without_b)
+      else {
+        global_DataConnector._data['requestsTable'].push(newReqRes)
+        //refresh table view of requests
+        global_DataConnector.refreshRequestsTable(global_DataConnector._data['requestsTable'])
+
+      }
+    }
 
   }))
 }

@@ -25,7 +25,18 @@ socketio.on(SocketEnum.DC_TOPIC, async (d) => {
       break;
     case SocketEnum.ONE_TIME_JOB_CREATED:  
         console.log('job of one_time type is available')
+        var request = global_DataConnector._data['requestsTable'].
+                          find(x=>x.id==jsonData.data.id)
+                         
+        //refresh the specific request with jobs list
+        if(request){
+            request.jobs = jsonData.data.jobs
+            request.completedAt = jsonData.data.completedAt
+            request.status = jsonData.data.status
 
+             //refresh table view of requests
+            global_DataConnector.refreshRequestsTable()
+        } 
         break;
     case SocketEnum.DC_ERROR: 
        

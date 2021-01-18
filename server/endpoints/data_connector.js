@@ -96,7 +96,7 @@ async function extractRequests(hubId, allRequests) {
 
   return Promise.all(promiseArr).then((resultsArray) => {
     console.log(`Promise.all sorting out assets done`)
-    resultsArray = utility.flatDeep(resultsArray, Infinity)  
+    resultsArray = utility.flatDeep(resultsArray, Infinity)
     return resultsArray
   }).catch(function (err) {
     console.error(`exception when Promise.all sorting out requests: ${err}`)
@@ -115,8 +115,8 @@ router.get('/requests/:hubId', async (req, res, next) => {
   try {
     //get all requests
     var allRequests = []
-    allRequests = await extractRequests(hubId,allRequests) 
-    
+    allRequests = await extractRequests(hubId, allRequests)
+
     utility.socketNotify(utility.SocketEnum.DC_TOPIC,
       utility.SocketEnum.EXPORT_REQUESTS_DONE,
       allRequests)
@@ -126,13 +126,12 @@ router.get('/requests/:hubId', async (req, res, next) => {
     console.log('get all requests failed: ' + e.message)
     utility.socketNotify(utility.SocketEnum.ASSET_TOPIC,
       utility.SocketEnum.DC_ERROR,
-      {error:e.message}) 
+      { error: e.message })
   }
 });
 
 //create new request
 router.post('/requests/:hubId', jsonParser, async (req, res, next) => {
-
 
   const hubId = req.params['hubId']
   let body = req.body
@@ -140,7 +139,11 @@ router.post('/requests/:hubId', jsonParser, async (req, res, next) => {
   try {
     createRes = await dcServices.postRequest(hubId, body)
     if (createRes) {
-      res.end()
+      createRes.jobs = []
+      createRes.completedAt = null
+      createRes.status = null
+
+      res.json(createRes)
     } else {
       res.status(500).end()
     }
@@ -150,22 +153,46 @@ router.post('/requests/:hubId', jsonParser, async (req, res, next) => {
     res.status(500).end()
   }
 
-  if (createRes) {
+  try {
+    if (createRes && createRes.scheduleInterval == 'ONE_TIME') {
 
+      //if ONE_TIME request, it may take a few minutes to have job list with request
+      //send notification to client firstly and use socket to notify when one job is available 
 
-    //if ONE_TIME request, it may take a few minutes to have job list with request
-    //send notification to client firstly and use socket to notify when one job is available 
+      // as to other type of request（Day/Week/Month/Year), depending on the date of executeFrom. 
+      // so better leave '/requests/callback' to nortify client when a job is done..
 
-    // as to other type of request（Day/Week/Month/Year), depending on the date of executeFrom. 
-    // so better leave '/requests/callback' to nortify client when a job is done..
+      //start to polling the job list, normally within 5 minutes
+      //timeout if more than 5 minutes, then the client has to refresh manually
+      //at client side.
 
-    //start to polling the job list, normally within 5 minutes
-    //timeout if more than 5 minutes, then the client has to refresh manually
-    //at client side.
-    var allJobs = []
-    while (allJobs.length == 0)
-      allJobs = await dcServices.getJobs(hubId, reqId, allJobs)
+      const st = new Date().getTime()
 
+      var allJobs = []
+      console.log(`polling jobs list of one_time request: ${createRes.id}`)
+      while (allJobs.length == 0 && utility.checkTimeout(st, new Date().getTime())){
+        allJobs = await dcServices.getJobs(hubId, createRes.id, allJobs)
+        await utility.delay(5000) 
+      } 
+      if (allJobs.length > 0) {
+        console.log(` jobs are available now with: ${createRes.id}.....`)
+
+        createRes.jobs = allJobs
+        createRes.completedAt = allJobs[0].completedAt
+        createRes.status = allJobs[0].status
+        //notify client
+        utility.socketNotify(utility.SocketEnum.DC_TOPIC,
+          utility.SocketEnum.ONE_TIME_JOB_CREATED,
+          createRes)
+      }else
+        console.log(` no jobs with: ${createRes.id} yet or timeout of the polling, try later again`)
+
+    }
+  } catch (e) {
+    console.log('get jobs of one request (one_time) failed: ' + e.message)
+    utility.socketNotify(utility.SocketEnum.ASSET_TOPIC,
+      utility.SocketEnum.DC_ERROR,
+      { error: e.message })
   }
 
 });
