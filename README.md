@@ -1,1 +1,140 @@
-# forge-bim360-data.connector.dashboard
+# Dashboard Sample of BIM 360 Data Connector API
+
+[![Node.js](https://img.shields.io/badge/Node.js-12.19-blue.svg)](https://nodejs.org/)
+[![npm](https://img.shields.io/badge/npm-6.14.8-blue.svg)](https://www.npmjs.com/)
+![Platforms](https://img.shields.io/badge/Web-Windows%20%7C%20MacOS%20%7C%20Linux-lightgray.svg)
+[![Data-Management](https://img.shields.io/badge/Data%20Management-v1-green.svg)](http://developer.autodesk.com/)
+
+[![BIM-360 API](https://img.shields.io/badge/BIM%20360-api-green.svg)](https://forge.autodesk.com/en/docs/bim360/v1/reference/http/)
+[![Data Connector API](https://img.shields.io/badge/Data%20Connector%20API-v1--v2-yellowgreen)](http://developer.autodesk.com/)
+
+[![MIT](https://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
+[![Level](https://img.shields.io/badge/Level-Intermediate-blue.svg)](http://developer.autodesk.com/)
+
+## Description
+This sample demonstrates the following use cases:
+
+* Export requests with their service groups schedule interval, reoccurring interval and their jobs, status. 
+* Get data list of a complete job
+* Get data content and render dashboards. Current version only demos some dashboards of with BIM360 Issue data. You can extend the sample with dashboards for other data.
+* Create new request with any type of schedule interval and service groups.
+
+  
+## Thumbnail
+![thumbnail](/help/main.png)  
+
+## Demonstration
+[Demo Video]()
+
+## Live Demo
+[TBD]()
+
+# Web App Setup
+
+## Prerequisites
+
+1. **Forge Account**: Learn how to create a Forge Account, activate subscription and create an app at [this tutorial](http://learnforge.autodesk.io/#/account/). 
+2. **BIM 360 Account**: must be Account Admin to add the app integration. [Learn about provisioning](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps). 
+3. **BIM 360 Data Connector**: Ensure Account Insight is available and the user is Account Executive. Check [product help]( https://knowledge.autodesk.com/support/bim-360/learn-explore/caas/CloudHelp/cloudhelp/ENU/BIM360D-Insight/files/BIM360D-Insight-data-extractor-html-html.html) for more
+   <img src="./help/dcsetting.png" width="800">   
+4. **Node.js**: basic knowledge with [**Node.js**](https://nodejs.org/en/).
+5. **JavaScript** basic knowledge with **jQuery**, **Chart.js** and other basic 
+
+For using this sample, you need an Autodesk developer credentials. Visit the [Forge Developer Portal](https://developer.autodesk.com), sign up for an account, then [create an app](https://developer.autodesk.com/myapps/create). For this new app, use **http://localhost:3000/oauth/callback** as Callback URL. Finally take note of the **Client ID** and **Client Secret**.
+
+## Running locally
+
+Install [NodeJS](https://nodejs.org), version 12 or newer. The older version of Node.js may also work, but not tested..
+
+Clone this project or download it (this `nodejs` branch only). It's recommended to install [GitHub desktop](https://desktop.github.com/). To clone it via command line, use the following (**Terminal** on MacOSX/Linux, **Git Shell** on Windows):
+
+    git clone https://github.com/xiaodongliang/forge-bim360-data.connector.dashboard
+
+Install the required packages using `npm install`.
+
+**Environment variables**
+
+Set the enviroment variables with your client ID & secret and finally start it. Via command line, navigate to the folder where this repository was cloned and use the following:
+
+Mac OSX/Linux (Terminal)
+
+    npm install
+    export FORGE_CLIENT_ID=<<YOUR CLIENT ID FROM DEVELOPER PORTAL>>
+    export FORGE_CLIENT_SECRET=<<YOUR CLIENT SECRET>>
+    export FORGE_CALLBACK_URL=<<YOUR CALLBACK URL>>
+    export DC_CALLBACK_URL=<<YOUR DATA CONNECTOR CALLBACK>>
+
+    npm start
+
+Windows (use **Node.js command line** from Start menu)
+
+    npm install
+    set FORGE_CLIENT_ID=<<YOUR CLIENT ID FROM DEVELOPER PORTAL>>
+    set FORGE_CLIENT_SECRET=<<YOUR CLIENT SECRET>>
+    set FORGE_CALLBACK_URL=<<YOUR CALLBACK URL>>
+set DC_CALLBACK_URL=<<YOUR DATA CONNECTOR CALLBACK>>
+
+    npm start
+
+OR, set environment variables of [launch.json](/.vscode/launch.json) for debugging.
+
+
+## Use Cases
+
+1. Open the browser: [http://localhost:3000](http://localhost:3000). 
+
+Please watch the [Video]() for the detail and usage the steps.
+
+2. After the user logging succeeds, select a hub. The code will start to extract all requests, and display them in table view.  It will show the basic information of the request such as their service groups, schedule interval, reoccurring interval and their jobs, status.
+
+3. If the request is ONE_TIME, it has only one job. If other types, it is jobs list, select specific job, the status column will indicate if it completes or not.
+
+4. Click one request,  the sample will get data list of the selected job of this request. All the data files will be listed in Data List view. It depends on how many service groups that are extracted. Click **download** icon of the file, it will download the file (csv) to local.
+
+5. To demo the data analysis, this sample produces dashboards with Issue data, so there is another icon ** tachometer** with Issues-Issues.csv.  Click this icon, it will generate some dashboards with Issue data. Since some issue data is Id only (such as project id, user id), the code behind actually takes advantage of Admin data.   
+
+6. To create a new request, configure the service groups,  schedule interval, reoccurring interval, and execute from date, and end date (if schedule interval is not ONE_TIME). Click **Create Request** button, it will create a new request and refresh the table view. 
+
+7. At the beginning right after a new request is created, no job yet. So the job list is empty. Since the job of ONE_TIME will start immediately, the sample will poll status of job list. When it is available, it will notify client side by socket, and refresh the job list of table view. 
+As to other type than ONE_TIME, the execute start time may not happen soon, so the sample does not check job list. The user will have to click hub after some time, depending on when the execute start time will be.
+
+8. The sample also place a hold with Callback feature of Data Connector API. The callback will not triggered when a job completes, or fails. You can decide what you want to do with the sample, or with your own sample. 
+
+## Deployment
+
+To deploy this application to Heroku, the **Callback URL** for Forge must use your `.herokuapp.com` address. After clicking on the button below, at the Heroku Create New App page, set your Client ID, Secret and Callback URL for Forge.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/xiaodongliang/forge-bim360-data.connector.dashboard)
+
+## Limitation
+
+
+## Tips & Tricks
+
+* DC API supports 3-legged token only. And the user must have Admin Executive permission. 
+* DC API supports callback to get notification when one job is done, in which it will tell request id and job id.  
+* Extracted data is stored on AWS for 30 days. If you do not want to extract the data of specific time again, ensure to download the data to your own database within 30 days.
+* When a request is newly created, it may take a few minutes API could return the jobs list.
+* Be careful not to set effectiveFrom, effectiveTo to the past time when you create request.
+
+## Troubleshooting
+1. **Cannot see my BIM 360 projects**: Make sure to provision the Forge App Client ID within the BIM 360 Account, [learn more here](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps). This requires the Account Admin permission.
+ 
+## Further Reading
+**Document**
+ 
+**Tutorials**:
+- [View BIM 360 Models](http://learnforge.autodesk.io/#/tutorials/viewhubmodels)
+
+**Blogs**:
+- [Forge Blog](https://forge.autodesk.com/categories/bim-360-api)
+- [Field of View](https://fieldofviewblog.wordpress.com/), a BIM focused blog
+
+## License
+This sample is licensed under the terms of the [MIT License](http://opensource.org/licenses/MIT). Please see the [LICENSE](LICENSE) file for full details.
+
+## Written by
+Xiaodong Liang [@coldwood](https://twitter.com/coldwood), [Forge Advocate and Support](http://forge.autodesk.com)
+
+
+

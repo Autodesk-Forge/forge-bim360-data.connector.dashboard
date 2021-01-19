@@ -35,7 +35,7 @@ socketio.on(SocketEnum.DC_TOPIC, async (d) => {
             request.status = jsonData.data.status
 
              //refresh table view of requests
-            global_DataConnector.refreshRequestsTable()
+            global_DataConnector.refreshRequestsTable(global_DataConnector._data['requestsTable'])
         } 
         break;
     case SocketEnum.DC_ERROR: 

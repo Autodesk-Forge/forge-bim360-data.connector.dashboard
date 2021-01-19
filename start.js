@@ -25,7 +25,8 @@ const session = require('express-session');
 const oauth = require('./server/endpoints/oauth'); 
 const dm = require('./server/endpoints/data_management')
 const dc = require('./server/endpoints/data_connector'); 
- 
+const dc_callback = require('./server/endpoints/data_connector_callback'); 
+
 app.use(cookieParser());
 // app.set('trust proxy', 1) // trust first proxy - HTTPS on Heroku 
 app.use(session({
@@ -44,7 +45,8 @@ app.use('/', express.static(__dirname+ '/www') );
 app.use('/oauth', oauth);   
 app.use('/dm', dm)
 app.use('/dc', dc);  
- 
+app.use('/dc', dc_callback);  
+
 app.set('port', process.env.PORT || 3000);
  
 //setup socket 

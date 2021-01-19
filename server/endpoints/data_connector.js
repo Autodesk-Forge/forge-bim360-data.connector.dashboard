@@ -195,14 +195,8 @@ router.post('/requests/:hubId', jsonParser, async (req, res, next) => {
       { error: e.message })
   }
 
-});
-
-//callback when one job is done
-router.post('/requests/callback', async (req, res, next) => {
-
-  res.end() //notify Forge this callback is triggered 
-  console.log(`request callback is triggered: Request Id: ${req.body.request_id}, Job Id: ${req.body.job_id}`)
-})
+}); 
+ 
 
 router.get('/requests/:hubId/:reqId', async (req, res, next) => {
 

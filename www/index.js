@@ -90,36 +90,41 @@ function delegateCreateRequestButton() {
 
     var startDate, endDate
 
-    let d = new Date($("#startDate").val());
+    let date1 = new Date($("#startDate").val());
+    let currentDate= new Date()
+    //ensure start time is not pasted time
+    if(currentDate.getTime() > date1.getTime()){
+      //use current date time
+      date1 = currentDate
+    }
     // start first extration 1 minute after creating request
-    d.setUTCMinutes(d.getUTCMinutes() + 10) 
-      
+    date1.setUTCMinutes(date1.getUTCMinutes() + 1)
 
-      startDate = d.getFullYear()
-        + "-" + (("0" + (d.getUTCMonth() + 1)).slice(-2))
-        + "-" + ("0" + d.getUTCDate()).slice(-2)
-        + "T" + ("0" + d.getUTCHours()).slice(-2)
-        + ":" + ("0" + d.getUTCMinutes()).slice(-2)
-        + ":" + ("0" + d.getUTCSeconds()).slice(-2)
-        + ".000Z"
+
+    startDate = date1.getFullYear()
+      + "-" + (("0" + (date1.getUTCMonth() + 1)).slice(-2))
+      + "-" + ("0" + date1.getUTCDate()).slice(-2)
+      + "T" + ("0" + date1.getUTCHours()).slice(-2)
+      + ":" + ("0" + date1.getUTCMinutes()).slice(-2)
+      + ":" + ("0" + date1.getUTCSeconds()).slice(-2)
+      + ".000Z"
 
     if (scheduleInterval == 'ONE_TIME') {
       //ignore end date  
-    } else {
-      
-
-      d = new Date($("#endDate").val());
-      if (d.getUTCDate() == startDate.getUTCDate()) {
+    } else { 
+      var date2 = new Date($("#endDate").val());
+      if (date1.getUTCDate() >= date2.getUTCDate() || currentDate.getTime() > date2.getTime()) {
         //ensure the end date is future of start date
         alert('start and end date is same date! ')
         return
       }
-      endDate = d.getFullYear()
-        + "-" + (("0" + (d.getUTCMonth() + 1)).slice(-2))
-        + "-" + ("0" + d.getUTCDate()).slice(-2)
-        + "T" + ("0" + d.getUTCHours()).slice(-2)
-        + ":" + ("0" + d.getUTCMinutes()).slice(-2)
-        + ":" + ("0" + d.getUTCSeconds()).slice(-2)
+       
+      endDate = date2.getFullYear()
+        + "-" + (("0" + (date2.getUTCMonth() + 1)).slice(-2))
+        + "-" + ("0" + date2.getUTCDate()).slice(-2)
+        + "T" + ("0" + date2.getUTCHours()).slice(-2)
+        + ":" + ("0" + date2.getUTCMinutes()).slice(-2)
+        + ":" + ("0" + date2.getUTCSeconds()).slice(-2)
         + ".000Z"
 
     }
@@ -141,11 +146,13 @@ function delegateCreateRequestButton() {
         reoccuringInterval: reoccuringInterval,
         serviceGroups: serviceGroups,
         effectiveFrom: startDate,
-        effectiveTo: endtDate,
+        effectiveTo: endDate,
         //notified by Forge when one job is done
         //will add valid endpoint of callback on server side
         callbackUrl: null
       }
+    
+    $('.req_progress').show(); 
     //create new request
     const newReqRes = await global_DataConnector.createRequest(hub_id_without_b, body)
 
@@ -159,7 +166,7 @@ function delegateCreateRequestButton() {
 
       }
     }
-
+    $('.req_progress').hide(); 
   }))
 }
 

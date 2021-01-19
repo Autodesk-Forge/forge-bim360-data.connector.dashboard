@@ -1,16 +1,15 @@
 {
-  "name": "BIM 360 Model Coordination API Sample - PDF Exporter of Clash",
-  "description": "This repository demonstrates advanced viewing of clash raw data by Model Coordination API and demos exporting a PDF report on the clashes the user is interested in.",
-  "repository": "https://github.com/autodesk-forge/forge-bim360-clashpdfexport",
+  "name": "BIM 360 Data Connector API",
+  "description": "This repository demonstrates export requests, jobs, data list and use the data to render some dashboards.",
+  "repository": "https://github.com/xiaodongliang/forge-bim360-data.connector.dashboard",
   "logo": "https://avatars0.githubusercontent.com/u/8017462?v=3&s=200",
   "keywords": [
     "express",
     "framework",
     "autodesk",
     "forge",
-    "template",
-    "bim360appstore",
-    "modelcoordination"
+    "bim360",
+    "data_connector"
   ],
   "env": {
     "FORGE_CLIENT_ID": {
