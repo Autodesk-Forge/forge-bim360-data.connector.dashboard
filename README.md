@@ -123,7 +123,7 @@ As to other type than ONE_TIME, the execute start time may not happen soon, so t
 
 To deploy this application to Heroku, the **Callback URL** for Forge must use your `.herokuapp.com` address. After clicking on the button below, at the Heroku Create New App page, set your Client ID, Secret and Callback URL for Forge.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/xiaodongliang/forge-bim360-data.connector.dashboard)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/autodesk-forge/forge-bim360-data.connector.dashboard)
 
 ## Limitation
 1. The sample also place a hold with [Callback feature of Data Connector API](/server/endpoints/job_callback.js). The callback will triggered when a job completes, or fails. You can decide what you want to do with the sample, or with your own sample. 
