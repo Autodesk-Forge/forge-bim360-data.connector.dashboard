@@ -3,10 +3,10 @@
 [![Node.js](https://img.shields.io/badge/Node.js-12.19-blue.svg)](https://nodejs.org/)
 [![npm](https://img.shields.io/badge/npm-6.14.8-blue.svg)](https://www.npmjs.com/)
 ![Platforms](https://img.shields.io/badge/Web-Windows%20%7C%20MacOS%20%7C%20Linux-lightgray.svg)
-[![Data-Management](https://img.shields.io/badge/Data%20Management-v1-green.svg)](http://developer.autodesk.com/)
+[![Data-Management](https://img.shields.io/badge/Data%20Management-v2-green.svg)](https://forge.autodesk.com/en/docs/data/v2/reference/http/)
 
 [![BIM-360 API](https://img.shields.io/badge/BIM%20360api-v1-green.svg)](https://forge.autodesk.com/en/docs/bim360/v1/reference/http/)
-[![Data Connector API](https://img.shields.io/badge/Data%20Connector%20API-v1-yellowgreen)](http://developer.autodesk.com/)
+[![Data Connector API](https://img.shields.io/badge/Data%20Connector%20API-v1-yellowgreen)](https://forge.autodesk.com/en/docs/bim360/v1/overview/field-guide/data-connector/)
 
 [![MIT](https://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 [![Level](https://img.shields.io/badge/Level-Intermediate-blue.svg)](http://developer.autodesk.com/)
@@ -39,6 +39,8 @@ https://bim360-data-connect-dashboard.herokuapp.com/#
    <img src="./help/dcsetting.png" width="800">   
 4. **Node.js**: basic knowledge with [**Node.js**](https://nodejs.org/en/).
 5. **JavaScript** basic knowledge with **jQuery**, **Chart.js** and other basic 
+6. **ngrok**: Routing tool, [download here](https://ngrok.com/)
+
 
 For using this sample, you need an Autodesk developer credentials. Visit the [Forge Developer Portal](https://developer.autodesk.com), sign up for an account, then [create an app](https://developer.autodesk.com/myapps/create). For this new app, use **http://localhost:3000/oauth/callback** as Callback URL. Finally take note of the **Client ID** and **Client Secret**.
 
@@ -52,17 +54,21 @@ Clone this project or download it (this `nodejs` branch only). It's recommended 
 
 Install the required packages using `npm install`.
 
+**ngrok**
+
+Run `ngrok http 3000 -host-header="localhost:3000"` to create a tunnel to your local machine, then copy the address into the `FORGE_WEBHOOK_URL` environment variable.
+
 **Environment variables**
 
-Set the enviroment variables with your client ID & secret and finally start it. Via command line, navigate to the folder where this repository was cloned and use the following:
+Set the enviroment variables with your Forge client id & secret, forge callback url (to get 3-legged token from user logging) and Data Connector callback url (DC_CALLBACK_URL). [Callback of Data Connector API](/server/endpoints/job_callback.js) is one payload parameter when creating one Data Connector Request. It will will trigger when a job completes, or fails, telling the request id, job id etc. You can decide what you want to do with the sample, or with your own sample.  Via command line, navigate to the folder where this repository was cloned and use the following:
 
 Mac OSX/Linux (Terminal)
 
     npm install
     export FORGE_CLIENT_ID=<<YOUR CLIENT ID FROM DEVELOPER PORTAL>>
     export FORGE_CLIENT_SECRET=<<YOUR CLIENT SECRET>>
-    export FORGE_CALLBACK_URL=<<YOUR CALLBACK URL>>
-    export DC_CALLBACK_URL=<<YOUR DATA CONNECTOR CALLBACK>>
+    export FORGE_CALLBACK_URL=<<your callback url of Forge e.g. http://localhost:3000/api/forge/callback/oauth>>
+    export DC_CALLBACK_URL=<<"your ngrok address here: e.g. http://abcd1234.ngrok.io/job/callback">>
 
     npm start
 
@@ -71,21 +77,34 @@ Windows (use **Node.js command line** from Start menu)
     npm install
     set FORGE_CLIENT_ID=<<YOUR CLIENT ID FROM DEVELOPER PORTAL>>
     set FORGE_CLIENT_SECRET=<<YOUR CLIENT SECRET>>
-    set FORGE_CALLBACK_URL=<<YOUR CALLBACK URL>>
-    set DC_CALLBACK_URL=<<YOUR DATA CONNECTOR CALLBACK>>
+    set FORGE_CALLBACK_URL=<<your callback url of Forge e.g. http://localhost:3000/api/forge/callback/oauth>>
+    set DC_CALLBACK_URL=<<"your ngrok address here: e.g. http://abcd1234.ngrok.io/job/callback">>
+
+
+**Set Socket host at client side** 
+Define the socket endpoint same to your host at [this line](/public/js/socket_modules.js#L11), e.g.
+```
+socketio = io('http://localhost:3000');  
+```
+
+Finally run the script to start the sample
 
     npm start
 
 OR, set environment variables of [launch.json](/.vscode/launch.json) for debugging.
 
-Define the socket endpoint same to your host at [this line](/public/js/socket_modules.js#L11), e.g.
-```
-socketio = io('http://localhost:3000');
-```
+```json
+"env": {
+    "FORGE_CLIENT_ID": "your id here",
+    "FORGE_CLIENT_SECRET": "your secret here",
+    "FORGE_CALLBACK_URL": "http://localhost:3000/api/forge/callback/oauth",
+    "DC_CALLBACK_URL": "your ngrok address here: e.g. http://abcd1234.ngrok.io/job/callback"
+},
+``` 
 
 ## Use Cases
 
-1. Open the browser: [http://localhost:3000](http://localhost:3000). Please watch the [Video]() for the detail and usage the steps.
+1. Open the browser: [http://localhost:3000](http://localhost:3000). Please watch the [Video](https://youtu.be/sJmeiK3xYTU) for the detail and usage the steps.
 
 2. After the user logging succeeds, select a hub. The code will start to extract all requests, and display them in table view.  It will show the basic information of the request such as their service groups, schedule interval, reoccurring interval and their jobs, status.
 
@@ -124,12 +143,12 @@ To deploy this application to Heroku, the **Callback URL** for Forge must use yo
  
 ## Further Reading
 **Document**
-- [Data Connector Field Guid](....)
-- [Data Connector API Reference](....)
+- [Data Connector Field Guid](https://forge.autodesk.com/en/docs/bim360/v1/overview/field-guide/data-connector/)
+- [Data Connector API Reference](https://forge.autodesk.com/en/docs/bim360/v1/reference/http/data-connector-requests-POST/)
 
 **Tutorials**:
-- [Data Connector Tutorial](....)
-- [Data Connector Postman Collection](....)
+- [Data Connector Tutorial](https://forge.autodesk.com/en/docs/bim360/v1/tutorials/data-connector/)
+- [Data Connector Postman Collection](https://github.com/autodesk-forge/forge-bim360-data.connector.api-postman.collection)
 
 **Blogs**:
 - [Forge Blog](https://forge.autodesk.com/categories/bim-360-api)
