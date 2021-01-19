@@ -21,10 +21,10 @@ This sample demonstrates the following use cases:
 
   
 ## Thumbnail
-[![https://youtu.be/sJmeiK3xYTU](http://img.youtube.com/vi/sJmeiK3xYTU/0.jpg)](https://youtu.be/sJmeiK3xYTU "Dashboard Sample of BIM 360 Data Connector API")
+![thumbnail](/help/main.png)  
 
 ## Demonstration
-[Demo Video]()
+[![https://youtu.be/sJmeiK3xYTU](http://img.youtube.com/vi/sJmeiK3xYTU/0.jpg)](https://youtu.be/sJmeiK3xYTU "Dashboard Sample of BIM 360 Data Connector API")
 
 ## Live Demo
 https://bim360-data-connect-dashboard.herokuapp.com/#
