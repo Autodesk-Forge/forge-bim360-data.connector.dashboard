@@ -1,12 +1,13 @@
 html, body{
   margin:2px;
   padding:0px;
+  min-width:1200px;
 }
+
 
 #dashboard {  
   overflow: auto;
-  height: 60vh;
-
+  height: 60vh; 
 } 
 
 .dropdown-menu{
@@ -194,7 +195,4 @@ body {
 .dropdown-height {
   height:60vh;
 }
- 
-.list-group {
-
-}
+  

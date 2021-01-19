@@ -21,11 +21,12 @@ const server = require('http').Server(app);
   
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+var bodyParser = require('body-parser');
 
 const oauth = require('./server/endpoints/oauth'); 
 const dm = require('./server/endpoints/data_management')
 const dc = require('./server/endpoints/data_connector'); 
-const dc_callback = require('./server/endpoints/data_connector_callback'); 
+const job_callback = require('./server/endpoints/job_callback'); 
 
 app.use(cookieParser());
 // app.set('trust proxy', 1) // trust first proxy - HTTPS on Heroku 
@@ -40,12 +41,17 @@ app.use(session({
   saveUninitialized: true
 }));
 
+app.use(express.json({ limit: '50mb' }));
+
+app.use(bodyParser());
+
+
 app.use('/', express.static(__dirname+ '/www') );
 
 app.use('/oauth', oauth);   
 app.use('/dm', dm)
 app.use('/dc', dc);  
-app.use('/dc', dc_callback);  
+app.use('/job', job_callback);  
 
 app.set('port', process.env.PORT || 3000);
  

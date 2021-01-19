@@ -22,9 +22,13 @@ const express = require('express');
 const router = express.Router(); 
  
 //callback when one job is done
-router.post('/requests/callback', async (req, res, next) => {
+router.post('/callback', async (req, res, next) => {
   res.end() //notify Forge this callback is triggered 
-  console.log(`request callback is triggered: Request Id: ${req.body.request_id}, Job Id: ${req.body.job_id}`)
+  console.log(`request callback is triggered: \n Account Id: ${req.body.accountId} \nRequest Id: ${req.body.requestId} \nJob Id: ${req.body.jobId}\nState: ${req.body.state}`)
+  
+  //do what you want with these data
+  //......
+
 }) 
 
 module.exports = router

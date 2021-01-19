@@ -97,9 +97,7 @@ Please watch the [Video]() for the detail and usage the steps.
 
 7. At the beginning right after a new request is created, no job yet. So the job list is empty. Since the job of ONE_TIME will start immediately, the sample will poll status of job list. When it is available, it will notify client side by socket, and refresh the job list of table view. 
 As to other type than ONE_TIME, the execute start time may not happen soon, so the sample does not check job list. The user will have to click hub after some time, depending on when the execute start time will be.
-
-8. The sample also place a hold with Callback feature of Data Connector API. The callback will not triggered when a job completes, or fails. You can decide what you want to do with the sample, or with your own sample. 
-
+ 
 ## Deployment
 
 To deploy this application to Heroku, the **Callback URL** for Forge must use your `.herokuapp.com` address. After clicking on the button below, at the Heroku Create New App page, set your Client ID, Secret and Callback URL for Forge.
@@ -107,6 +105,7 @@ To deploy this application to Heroku, the **Callback URL** for Forge must use yo
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/xiaodongliang/forge-bim360-data.connector.dashboard)
 
 ## Limitation
+1. The sample also place a hold with Callback feature of Data Connector API. The callback will not triggered when a job completes, or fails. You can decide what you want to do with the sample, or with your own sample. 
 
 
 ## Tips & Tricks
@@ -116,6 +115,7 @@ To deploy this application to Heroku, the **Callback URL** for Forge must use yo
 * Extracted data is stored on AWS for 30 days. If you do not want to extract the data of specific time again, ensure to download the data to your own database within 30 days.
 * When a request is newly created, it may take a few minutes API could return the jobs list.
 * Be careful not to set effectiveFrom, effectiveTo to the past time when you create request.
+* If a request is created in UI (Insight>>Data), the default description will be _IQ Data Extraction for <BIM360 Account ID>_. To make a shorter string in table view, this sample changes the description to _Extraction by UI_
 
 ## Troubleshooting
 1. **Cannot see my BIM 360 projects**: Make sure to provision the Forge App Client ID within the BIM 360 Account, [learn more here](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps). This requires the Account Admin permission.

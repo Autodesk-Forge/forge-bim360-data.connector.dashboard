@@ -2,8 +2,11 @@ const global_oAuth = new oAuth()
 const global_DataManagement = new DataManagement()
 const global_DataConnector = new DataConnector()
 const global_DataDashboard = new DataDashboard()
+const global_navHelp= new NavHelp()
+
 
 $(document).ready(function () {
+
 
   $('#signInButton').click(global_oAuth.forgeSignIn);
   (async () => {
@@ -31,6 +34,8 @@ $(document).ready(function () {
   initDefaultParamsOfCreateReq()
   //initialize columns of request table view
   global_DataConnector.initTable()
+  //initialize the helps
+  global_navHelp.init()   
 
 });
 

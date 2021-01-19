@@ -22,6 +22,7 @@ const express = require('express');
 const router = express.Router();
 const path = require("path")
 const fs = require("fs");
+const mkdir = require('mkdirp')
 
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
@@ -32,6 +33,11 @@ const utility = require('../utility')
 const { OAuth } = require('../services/oauth')
 const dcServices = require('../services/data_connector');
 
+const dataPath = path.join(__dirname, '/../downloads/');;
+
+if(!fs.existsSync(dataPath))
+  mkdir.mkdirp(dataPath,(err)=>{if(!err)console.log('folder ./server/downloads is created')})
+  
 
 //verify valid authentication
 router.use(async (req, res, next) => {
@@ -170,7 +176,8 @@ router.post('/requests/:hubId', jsonParser, async (req, res, next) => {
 
       var allJobs = []
       console.log(`polling jobs list of one_time request: ${createRes.id}`)
-      while (allJobs.length == 0 && utility.checkTimeout(st, new Date().getTime())){
+      while ( (allJobs.length == 0  || allJobs[0].startedAt == null )&&
+        utility.checkTimeout(st, new Date().getTime())){
         allJobs = await dcServices.getJobs(hubId, createRes.id, allJobs)
         await utility.delay(5000) 
       } 

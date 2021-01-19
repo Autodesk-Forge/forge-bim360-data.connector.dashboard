@@ -19,34 +19,7 @@ class NavHelp {
       else
         this.createHelpAndShow('configHelp');
      });
-  
-     $('#basicHelp').click((evt)=>{
-      if(document.getElementsByName('basicHelpDialog').length>0)
-           $('#basicHelpDialog').modal('show');
-      else
-        this.createHelpAndShow('basicHelp');
-     });
-  
-     $('#exportHelp').click((evt)=>{
-      if(document.getElementsByName('exportHelpDialog').length>0)
-           $('#exportHelpDialog').modal('show');
-      else
-        this.createHelpAndShow('exportHelp');
-     });
-  
-     $('#dashboardHelp').click((evt)=>{
-      if(document.getElementsByName('dashboardHelpDialog').length>0)
-           $('#dashboardHelpDialog').modal('show');
-      else
-        this.createHelpAndShow('dashboardHelp');
-     });
-  
-     $('#integrationHelp').click((evt)=>{
-      if(document.getElementsByName('integrationHelpDialog')>0)
-           $('#integrationHelpDialog').modal('show');
-      else
-        this.createHelpAndShow('integrationHelp');
-     });  
+   
   } 
 
   createHelpAndShow(helpName){
@@ -60,7 +33,7 @@ class NavHelp {
   
           if(helpName == 'configHelp'){
             $.getJSON("/oauth/clientid", function (res) {
-              $("#ClientID").val(res.ForgeClientId);
+              $("#ClientID").val(res.id);
               $('#'+helpName+'Dialog').modal('show');  
             }); 
             $("#provisionAccountSave").click(function () {
