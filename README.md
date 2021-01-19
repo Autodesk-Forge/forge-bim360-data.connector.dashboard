@@ -6,7 +6,7 @@
 [![Data-Management](https://img.shields.io/badge/Data%20Management-v1-green.svg)](http://developer.autodesk.com/)
 
 [![BIM-360 API](https://img.shields.io/badge/BIM%20360-api-green.svg)](https://forge.autodesk.com/en/docs/bim360/v1/reference/http/)
-[![Data Connector API](https://img.shields.io/badge/Data%20Connector%20API-v1--v2-yellowgreen)](http://developer.autodesk.com/)
+[![Data Connector API](https://img.shields.io/badge/Data%20Connector%20API-v1-yellowgreen)](http://developer.autodesk.com/)
 
 [![MIT](https://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 [![Level](https://img.shields.io/badge/Level-Intermediate-blue.svg)](http://developer.autodesk.com/)
