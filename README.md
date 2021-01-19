@@ -72,7 +72,7 @@ Windows (use **Node.js command line** from Start menu)
     set FORGE_CLIENT_ID=<<YOUR CLIENT ID FROM DEVELOPER PORTAL>>
     set FORGE_CLIENT_SECRET=<<YOUR CLIENT SECRET>>
     set FORGE_CALLBACK_URL=<<YOUR CALLBACK URL>>
-set DC_CALLBACK_URL=<<YOUR DATA CONNECTOR CALLBACK>>
+    set DC_CALLBACK_URL=<<YOUR DATA CONNECTOR CALLBACK>>
 
     npm start
 
@@ -81,13 +81,11 @@ OR, set environment variables of [launch.json](/.vscode/launch.json) for debuggi
 
 ## Use Cases
 
-1. Open the browser: [http://localhost:3000](http://localhost:3000). 
-
-Please watch the [Video]() for the detail and usage the steps.
+1. Open the browser: [http://localhost:3000](http://localhost:3000). Please watch the [Video]() for the detail and usage the steps.
 
 2. After the user logging succeeds, select a hub. The code will start to extract all requests, and display them in table view.  It will show the basic information of the request such as their service groups, schedule interval, reoccurring interval and their jobs, status.
 
-3. If the request is ONE_TIME, it has only one job. If other types, it is jobs list, select specific job, the status column will indicate if it completes or not.
+3. If the request is ONE_TIME, it has only one job. If other types, it may have jobs list, select specific job, the status column will indicate if it completes or not.
 
 4. Click one request,  the sample will get data list of the selected job of this request. All the data files will be listed in Data List view. It depends on how many service groups that are extracted. Click **download** icon of the file, it will download the file (csv) to local.
 
@@ -105,7 +103,7 @@ To deploy this application to Heroku, the **Callback URL** for Forge must use yo
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/xiaodongliang/forge-bim360-data.connector.dashboard)
 
 ## Limitation
-1. The sample also place a hold with Callback feature of Data Connector API. The callback will not triggered when a job completes, or fails. You can decide what you want to do with the sample, or with your own sample. 
+1. The sample also place a hold with [Callback feature of Data Connector API](/server/endpoints/job_callback.js). The callback will triggered when a job completes, or fails. You can decide what you want to do with the sample, or with your own sample. 
 
 
 ## Tips & Tricks
@@ -118,13 +116,16 @@ To deploy this application to Heroku, the **Callback URL** for Forge must use yo
 * If a request is created in UI (Insight>>Data), the default description will be _IQ Data Extraction for <BIM360 Account ID>_. To make a shorter string in table view, this sample changes the description to _Extraction by UI_
 
 ## Troubleshooting
-1. **Cannot see my BIM 360 projects**: Make sure to provision the Forge App Client ID within the BIM 360 Account, [learn more here](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps). This requires the Account Admin permission.
+1. **Cannot see my BIM 360 hub**: Make sure to provision the Forge App Client ID within the BIM 360 Account, [learn more here](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps). This requires the Account Admin permission.
  
 ## Further Reading
 **Document**
- 
+- [Data Connector Field Guid](....)
+- [Data Connector API Reference](....)
+
 **Tutorials**:
-- [View BIM 360 Models](http://learnforge.autodesk.io/#/tutorials/viewhubmodels)
+- [Data Connector Tutorial](....)
+- [Data Connector Postman Collection](....)
 
 **Blogs**:
 - [Forge Blog](https://forge.autodesk.com/categories/bim-360-api)
