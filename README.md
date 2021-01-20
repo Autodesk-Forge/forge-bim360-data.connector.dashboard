@@ -50,7 +50,7 @@ Install [NodeJS](https://nodejs.org), version 12 or newer. The older version of 
 
 Clone this project or download it (this `nodejs` branch only). It's recommended to install [GitHub desktop](https://desktop.github.com/). To clone it via command line, use the following (**Terminal** on MacOSX/Linux, **Git Shell** on Windows):
 
-    git clone https://github.com/xiaodongliang/forge-bim360-data.connector.dashboard
+    git clone https://github.com/autodesk-forge/forge-bim360-data.connector.dashboard
 
 Install the required packages using `npm install`.
 
