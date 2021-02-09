@@ -97,7 +97,7 @@ OR, set environment variables of [launch.json](/.vscode/launch.json) for debuggi
 "env": {
     "FORGE_CLIENT_ID": "your id here",
     "FORGE_CLIENT_SECRET": "your secret here",
-    "FORGE_CALLBACK_URL": "http://localhost:3000/api/forge/callback/oauth",
+    "FORGE_CALLBACK_URL": "http://localhost:3000/oauth/callback",
     "DC_CALLBACK_URL": "your ngrok address here: e.g. http://abcd1234.ngrok.io/job/callback"
 },
 ``` 
