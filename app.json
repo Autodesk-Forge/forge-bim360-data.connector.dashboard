@@ -20,7 +20,7 @@
     },
     "FORGE_CALLBACK_URL": {
       "description": "Callback URL of your Forge app, required for 3-legged OAuth",
-      "value": "https://<<YOUR HEROKU APP NAME HERE>>.herokuapp.com/api/forge/callback/oauth"
+      "value": "https://<<YOUR HEROKU APP NAME HERE>>.herokuapp.com/oauth/callback"
     },
     "DC_CALLBACK_URL": {
       "description": "Callback URL of your app to get notification of Data Connector job",

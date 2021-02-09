@@ -67,7 +67,7 @@ Mac OSX/Linux (Terminal)
     npm install
     export FORGE_CLIENT_ID=<<YOUR CLIENT ID FROM DEVELOPER PORTAL>>
     export FORGE_CLIENT_SECRET=<<YOUR CLIENT SECRET>>
-    export FORGE_CALLBACK_URL=<<your callback url of Forge e.g. http://localhost:3000/api/forge/callback/oauth>>
+    export FORGE_CALLBACK_URL=<<your callback url of Forge e.g. http://localhost:3000/oauth/callback>>
     export DC_CALLBACK_URL=<<"your ngrok address here: e.g. http://abcd1234.ngrok.io/job/callback">>
 
     npm start
@@ -77,7 +77,7 @@ Windows (use **Node.js command line** from Start menu)
     npm install
     set FORGE_CLIENT_ID=<<YOUR CLIENT ID FROM DEVELOPER PORTAL>>
     set FORGE_CLIENT_SECRET=<<YOUR CLIENT SECRET>>
-    set FORGE_CALLBACK_URL=<<your callback url of Forge e.g. http://localhost:3000/api/forge/callback/oauth>>
+    set FORGE_CALLBACK_URL=<<your callback url of Forge e.g. http://localhost:3000/oauth/callback>>
     set DC_CALLBACK_URL=<<"your ngrok address here: e.g. http://abcd1234.ngrok.io/job/callback">>
 
 
