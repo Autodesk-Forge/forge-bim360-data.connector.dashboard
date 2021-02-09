@@ -21,8 +21,9 @@ class DataDashboard {
   constructor() { 
     this._dashboardDefs =[
       'issues_issues.csv',
-      'admin_users.csv',
-      'checklists_checklists.csv'
+     // 'admin_users.csv',
+     // 'checklists_checklists.csv'
+     // if dashboards of more categories are needed
     ]
   }
  
@@ -222,15 +223,12 @@ class DataDashboard {
                             'overdueThisWeek')
 
 
-    }else if(dataKey == 'admin_users.csv'){
+    }else if(dataKey == 'xxxx.csv'){
 
       //if you want to extend with more dashboards...
       //prepare the HTML page like issue_dashboard.html
 
-    }else if(dataKey == 'checklists_checklists.csv'){
-        //if you want to extend with more dashboards... 
-        //prepare the HTML page like issue_dashboard.html 
-    }
+    } 
     //else if....
 
   } 
