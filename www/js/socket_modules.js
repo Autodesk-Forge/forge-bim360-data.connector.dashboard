@@ -7,7 +7,8 @@ const SocketEnum = {
   DC_ERROR:'dc errors'
 };  
 
-socketio = io('http://localhost:3000');
+const HOST_URL =  window.location.host; 
+socketio = io(HOST_URL);
 socketio.on(SocketEnum.DC_TOPIC, async (d) => {
 
   const jsonData = JSON.parse(d) 
