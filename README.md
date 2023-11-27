@@ -1,3 +1,6 @@
+# DEPRECATED
+This repository has been deprecated and migrated to https://github.com/autodesk-platform-services/aps-data-connector-dashboard
+
 # Dashboard Sample of BIM 360 Data Connector API
 
 [![Node.js](https://img.shields.io/badge/Node.js-12.19-blue.svg)](https://nodejs.org/)
